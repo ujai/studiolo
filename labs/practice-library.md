@@ -1,69 +1,80 @@
 # Practice Library
 
-One task per topic in `learner-map.md`. **You don't follow these top to bottom.** The learner
-map picks the topic; this file says what to do with it.
+One task per topic in `learner-map.md`. **You don't work through this file from top to bottom.**
+The learner map picks the topic, and this file tells you what to do with it.
 
-How each task is used in a session (see `study-plan.md`):
+How each part of a task is used in a session (see `study-plan.md`):
 
-- **Do it**: attempt it cold first. Ask the Explainer only for the step you're stuck on, then redo from step 1 without help.
-- **Break it**: deliberately break it, watch it fail, fix it. The sting of breaking it helps you remember.
+- **Do it**: try it on your own first. Only ask the Explainer about the step you're stuck on,
+  then redo it from step 1 without help.
+- **Break it**: break it on purpose, watch it fail, and fix it. Seeing it fail helps you
+  remember it.
 - **Socratic seed**: the first question for the Socratic questioner.
-- **Listener topic**: what your voice note, sketch, and 5-line written version must explain.
-- **Examiner focus**: what the escalating quiz should target.
-- **Example ladder** *(skill-heavy topics only, optional)*: for topics whose skill is running
-  a procedure — an integral, a git rebase, a verb form — the first meeting studies a fully
-  worked example, then completes a half-worked one, then fills a faded one (steps missing),
-  then solves a fresh one cold. Every later pass skips straight to solving cold. Examples
-  first is the best-replicated result for novices; the ladder stops helping once you're past
-  novice, which is why it's the first meeting only (see `docs/learning-science.md`).
+- **Listener topic**: what your voice note, sketch, and 5 written lines need to explain.
+- **Examiner focus**: what the quiz should test.
+- **Example ladder** *(optional, only for skill topics)*: for topics where the skill is following
+  a procedure (an integral, a git rebase, a verb form). The first time, you study a fully worked
+  example, then finish a half-done one, then fill in one with steps missing, then solve a new one
+  on your own. After that first time, you go straight to solving. Starting with examples is what
+  works best for beginners, and it stops helping once you're past that stage, so it's only for
+  the first time (see `docs/learning-science.md`).
 
-What "Do it" and "Break it" mean depends on the subject (the table in `AGENTS.md` §3): solve
-then mutate for math, recall then timeline-break for history, build then misconfigure for
-hands-on subjects, perform then isolate-and-slow for music. The Mapmaker writes tasks in
-whichever form fits; the labels above never change. For a brand-new procedure, the Example
-ladder IS the first "Do it" — from the second pass on, "Do it" is solving a fresh variant cold.
+What "Do it" and "Break it" look like depends on the subject (see the table in `AGENTS.md` §3).
+In math you solve a problem, then change it. In history you recall the events, then mix up the
+timeline. In hands-on subjects you build something, then misconfigure it. In music you play the
+piece, then slow down the hardest part. The Mapmaker writes each task in the form that fits, and
+the labels stay the same. For a brand-new procedure, the Example ladder is the first "Do it".
+From the second time on, "Do it" means solving a new version on your own.
 
-After intake, your agent adds one entry per topic here, in this format.
+After the interview, your agent adds one entry per topic here, in this format.
 
 ---
 
-## Area 1 — The science of learning (starter demo)
+## Area 1: The science of learning (starter demo)
 
 ### 1.1 How memory works
-- **Do it** (20 min): Pick any page of notes from any other subject. Close it. Write everything
-  you recall in 3 minutes. Open the page and mark what you missed. Repeat tomorrow with the
-  same page — notice the jump from one day of spacing.
-- **Break it**: Try the same recall with the page open. Notice how it feels easier and how
-  much weaker it sticks. That feeling is the fluency illusion: recognition posing as knowledge.
-- **Socratic seed**: Why does recalling with the page open feel easier but produce weaker learning?
-- **Listener topic**: Encoding vs retrieval — why "pulling it out" is what makes it stay in.
-- **Examiner focus**: Familiarity vs recall; why rereading feels productive but tests nothing.
+- **Do it** (20 min): Take a page of notes from any other subject. Close it, and write down
+  everything you remember in 3 minutes. Then open the page and mark what you missed. Do the same
+  page again tomorrow, and see how much more you remember after a day's gap.
+- **Break it**: Do the same recall with the page open. Notice that it feels easier, and that it
+  sticks much less. That's the fluency illusion: recognizing something feels like knowing it.
+- **Socratic seed**: Why does recalling with the page open feel easier, but help you learn less?
+- **Listener topic**: Storing versus recalling, and why pulling it out of your memory is what
+  makes it stay.
+- **Examiner focus**: Familiarity versus recall, and why rereading feels productive but tests
+  nothing.
 
 ### 1.2 How to practice
-- **Do it** (20 min): Take 20 flashcards (any subject, or `anki/starter-deck.csv`). Split them:
-  10 cards in one cramming block today; 10 spread over 4 shorter sessions this week. At the
-  end of the week test all 20 and record which half did better.
-- **Break it**: Skip a spaced day on purpose. Watch those items slide in the review queue —
-  and note that the ladder still catches them. Missing once isn't failure; the ladder exists
-  because you will.
-- **Socratic seed**: Why does spacing beat cramming when total time is equal?
-- **Listener topic**: The testing effect and the wrong-twice rule — how mistakes drive the system.
-- **Examiner focus**: Spacing vs massing; testing vs rereading; interleaving similar things.
+- **Do it** (20 min): Take 20 flashcards (from any subject, or `anki/starter-deck.csv`). Split
+  them into two groups of 10. Study the first 10 in one block today, and spread the other 10
+  over 4 shorter sessions this week. At the end of the week, test yourself on all 20 and write
+  down which group you did better on.
+- **Break it**: Skip one of the spaced days on purpose. Watch those cards fall behind in the
+  review queue, and notice that the schedule still brings them back. Missing a day isn't a
+  failure. The schedule is built for the days you miss.
+- **Socratic seed**: Why does spacing beat cramming when the total time is the same?
+- **Listener topic**: The testing effect and the wrong-twice rule, and how your mistakes decide
+  what you practise.
+- **Examiner focus**: Spacing versus cramming, testing versus rereading, and mixing similar
+  topics together.
 
 ## Pressure simulations (Sparring, prompt §9)
 
-Symptom-first simulations for the Sparring partner. Don't read the answer key first.
+Simulations for the Sparring partner where you start from a problem and work out the cause.
+Don't read the answer key first.
 
 **How to run one**
 
-1. Paste the prompt + the simulation into a fresh AI chat (or ask your agent: *"pressure
-   simulation, SIM-01"*).
-2. Ask for facts one at a time; the AI reveals only what you asked for.
-3. 10 minutes to the root cause and the simplest fix.
-4. Get scored on: order of checks, wasted steps, simplest correct fix. **Then** read the key.
+1. Paste the prompt and the simulation into a new AI chat, or ask your agent: *"pressure
+   simulation, SIM-01"*.
+2. Ask for facts one at a time. The AI only tells you what you ask for.
+3. You have 10 minutes to find the cause and the simplest fix.
+4. You get scored on the order you checked things in, wasted steps, and whether your fix was the
+   simplest one that works. **Then** read the key.
 
-Rules: one simulation = one 25-min block. Stuck after 10 minutes? Read only the "check order"
-line of the key, then keep going. Log every wrong turn in the mistake log, source role = Sparring.
+Rules: one simulation is one 25-minute block. If you're stuck after 10 minutes, read only the
+"Check order" line of the key, then keep going. Log every wrong turn in the mistake log, with
+source role = Sparring.
 
 ### SIM-01 · The friend who crams (topics 1.1, 1.2)
 
@@ -73,10 +84,11 @@ line of the key, then keep going. Log every wrong turn in the mistake log, sourc
 > cramming "works for them". Give me only their argument first; I'll rebut point by point. Play
 > devil's advocate for up to 5 minutes, then score my rebuttals against the learning science.
 
-**Answer key (read after):** Check order: what does "works" mean — survived the test, or kept
-it a month later? → what does each schedule optimize (cramming optimizes tomorrow, spacing
-optimizes retention)? → can both be right at different horizons? Fix: concede the short-term
-win, then show the week-after gap. Trap: "worked for me" measures the wrong horizon.
+**Answer key (read it afterwards):** Check order: what does "works" mean, passing the test or
+still remembering it a month later? Then: what does each schedule help with (cramming helps
+tomorrow, spacing helps you keep it)? Then: can both be right over different time spans? Fix:
+agree that cramming wins in the short term, then show the gap a week later. Trap: "it works for
+me" is measured over the wrong time span.
 
 ### SIM-02 · The notes that feel productive (topic 1.1)
 
@@ -86,11 +98,12 @@ win, then show the week-after gap. Trap: "worked for me" measures the wrong hori
 > should ask myself, one at a time, until I figure out whether I actually learned anything.
 > Score me at the end.
 
-**Answer key:** Check order: can I reproduce anything with the book closed? → can I solve a
-problem I haven't seen? → am I recognizing or recalling? Fix: convert the session — 10 minutes
-of closed-book recall beats 2 more hours of rereading. Trap: effort and familiarity feel like
-learning; only production tests it.
+**Answer key:** Check order: can I write anything down with the book closed? Then: can I solve a
+problem I haven't seen before? Then: am I recognizing it or recalling it? Fix: change the plan.
+10 minutes of recalling with the book closed does more than 2 more hours of rereading. Trap:
+effort and familiarity feel like learning, but only producing the answer shows whether you
+learned it.
 
-*(After intake, your agent writes simulations here for YOUR subject: incidents for hands-on
-subjects, planted-error solutions for math, broken dialogues for languages, source critique
-for humanities.)*
+*(After the interview, your agent writes simulations here for your own subject: troubleshooting
+problems for hands-on subjects, worked solutions with planted mistakes for math, broken
+dialogues for languages, and source criticism for humanities.)*

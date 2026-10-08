@@ -1,10 +1,12 @@
 # Progress Tracker
 
-> Mark `[x]` when done, `[~]` when half done or a short-day fallback, `[ ]` when missed.
-> Topic = the ID that `learner-map.md` picked. Level = the Examiner result (0–5) at the end of the session.
-> Add rows as you go; the numbering only matters to you.
+> Mark `[x]` when it's done, `[~]` when it's half done or you did the short-day fallback, and
+> `[ ]` when you missed it.
+> Topic is the ID that `learner-map.md` picked. Level is your Examiner result (0–5) at the end
+> of the session.
+> Add rows as you go. The numbering is just for you.
 
-## Day 1 — Intake
+## Day 1: Intake
 
 | Date | Interviewer | Find my level | Mapmaker | Resources picked |
 |------|-------------|---------------|----------|-----------------|
@@ -12,10 +14,10 @@
 
 ## Daily sessions
 
-Columns follow the session loop in `study-plan.md`. Cold = cold attempt, Redo = redo from
-scratch without help, Break = the "break it" step.
+The columns follow the daily session in `study-plan.md`. First = your first attempt on your own,
+Redo = redoing it from scratch without help, Break = the "Break it" step.
 
-| Day | Date | Topic | Due reviews | Cold | Redo | Break | Socratic | Listener | Level | Cards |
+| Day | Date | Topic | Due reviews | First | Redo | Break | Socratic | Listener | Level | Cards |
 |-----|------|-------|-------------|------|------|-------|----------|----------|-------|-------|
 | | ___ | ___ | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | _ | _ |
 | | ___ | ___ | [ ] | [ ] | [ ] | [ ] | [ ] | [ ] | _ | _ |
@@ -33,7 +35,7 @@ scratch without help, Break = the "break it" step.
 | ___ | ___/30 | [ ] | [ ] | [ ] | [ ] |
 | ___ | ___/30 | [ ] | [ ] | [ ] | [ ] |
 
-## Final sprint — exam track only (last ~6 days before the test)
+## Final sprint, exam track only (the last 6 days before the test)
 
 | Day | Date | Activity | Done | Score |
 |-----|------|----------|------|-------|
@@ -46,17 +48,18 @@ scratch without help, Break = the "break it" step.
 
 ## Map snapshot
 
-Copy the topic levels from `learner-map.md` on each ritual day to see progress.
-(Add your areas after intake; the starter demo uses area 1, "The science of learning".)
+On each weekly ritual day, copy your topic levels from `learner-map.md` here so you can see how
+far you've come. Add your own areas after the interview. The starter demo uses area 1, "The
+science of learning".
 
 | Area / topics | Start | Ritual 1 | Ritual 2 | Ritual 3 | Ritual 4 |
 |---------------|-------|----------|----------|----------|----------|
 | | | | | | |
 | | | | | | |
 
-## Cheat sheets (Clerk-organized, your own words)
+## Cheat sheets (in your own words, tidied by the Clerk)
 
-> Blank templates live in [`cheatsheets/`](./cheatsheets/). Fill them from your head; the Clerk only tidies.
+> The blank templates are in [`cheatsheets/`](./cheatsheets/). Fill them in from memory. The Clerk only tidies them up.
 
 | Area | Created? | `[CHECK]` items verified in an authoritative source? |
 |------|----------|--------------------------------------------------------|

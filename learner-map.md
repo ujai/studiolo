@@ -1,27 +1,28 @@
 # Learner Map
 
-This file drives learner study sessions. Each study session starts by reading it and ends
-by updating it. Leave the starter Intake empty when maintaining the reusable template.
-Paste the **Intake**, **Map**, and **Root causes** sections into a plain AI chat at the start
-of each study chat (`ai-tutor/prompts.md` §0); agents that read `AGENTS.md` do this automatically
-for study.
+This file runs your study sessions. Every session starts by reading it and ends by updating it.
+If you're working on the template itself, leave the Intake below empty.
+
+If you use a plain AI chat, paste the **Intake**, **Map**, and **Root causes** sections in at the
+start of each study chat (`ai-tutor/prompts.md` §0). Agents that read `AGENTS.md` do this for
+you when you study.
 
 ## Intake (Interviewer output, Day 1)
 
-> While the status below says `not done`, every study session starts with the Interviewer
-> (`ai-tutor/prompts.md` §1). This does not gate template maintenance. The Interviewer fills
-> this in when you start studying your subject.
+> As long as the status below says `not done`, every study session starts with the Interviewer
+> (`ai-tutor/prompts.md` §1). Working on the template doesn't need this. The Interviewer fills it
+> in when you start studying your subject.
 
 - Status: not done
 - Subject / goal:
 - Study jurisdiction / grade or qualification / exam code and version / academic year (if applicable):
 - Official requirements source: (authority, title, version/year, applicable/effective date, official URL, checked date)
 - Source status: (not checked / official source verified (applicable version) / learner-provided (currentness unverified) / conflicting sources, awaiting clarification / unable to verify, awaiting learner source / recheck required / not applicable (general study))
-- Deadline: none — set one (a real test date, or a self-imposed target; a map without a date drifts)
+- Deadline: none yet (add a real test date, or a target date you set yourself; without a date, plans tend to drift)
 - Time budget: ___ per day, ___ per week
-- How I'm tested: (format, question types, count/duration, pass mark, topic weightings if published — or "no test, steady learning")
-- Exam language / regional variant (the language of the exam papers, if not how we chat):
-- Accessibility / accommodations (extra time, screen reader, large print… note lead time; or "none"):
+- How I'm tested: (format, question types, number of questions and time, pass mark, topic weightings if they're published, or "no test, steady learning")
+- Exam language / regional variant (the language the exam is written in, if it's not the one we chat in):
+- Accessibility / accommodations (extra time, screen reader, large print… and how far ahead they need booking; or "none"):
 - What counts as practice for this subject: (problems? essays? speaking? building?)
 - Strong areas:
 - Weak areas:
@@ -36,13 +37,13 @@ Interviewer 12-line summary (pasted after the interview):
 | Level | Meaning |
 |-------|---------|
 | 0 | Not tested yet |
-| 1 | Recognize it, name it |
-| 2 | Explain it in your own words |
-| 3 | Apply it correctly in a simple problem |
-| 4 | Solve realistic scenarios with multiple constraints |
-| 5 | Troubleshoot novel problems, and explain why tempting wrong answers are wrong |
+| 1 | You can recognize it and name it |
+| 2 | You can explain it in your own words |
+| 3 | You can apply it correctly in a simple problem |
+| 4 | You can solve realistic problems with several constraints |
+| 5 | You can troubleshoot problems you haven't seen before, and explain why the tempting wrong answers are wrong |
 
-**Next review** (spaced repetition): after each Examiner run, set the next review date:
+**Next review** (spaced repetition): after each Examiner quiz, set the next review date:
 
 | Times reviewed at the same or higher level | Next review in |
 |----|----|
@@ -52,29 +53,33 @@ Interviewer 12-line summary (pasted after the interview):
 | 4th | +14 days |
 | 5th | +30 days (level 4–5 only) |
 | 6th+ | +60 days (level 5 only) |
-| Level dropped | reset to +1 day |
+| Level dropped | back to +1 day |
 
-Only proven mastery stretches the gaps: below level 4 the ladder tops out at +14 days, and
-`whats_due.py` applies that cap for you. The practice app's question ladder stays at 1, 3, 7
-and 14 days (a miss sends a question back to tomorrow) — topic reviews are the ones that
-stretch. `python3 whats_due.py` prints which rung is next for a topic, and how overdue it is.
+The gaps only get long once you've shown you really know a topic. Below level 4 they stop at +14
+days, and `whats_due.py` applies that limit for you. The practice app's question reviews stay at
+1, 3, 7, and 14 days (a miss brings a question back tomorrow). Only topic reviews go longer.
+`python3 whats_due.py` shows the next gap for each topic and how overdue it is.
 
 **Picking today's topic:**
 
-1. A topic with **Next review ≤ today** gets a 10-minute Examiner review first (not a full session).
-2. For the main session, pick the topic with the **lowest level** whose **dependencies are all at level 3 or higher**.
-3. Ties: order in this file (earlier rows first), unless the **Next up** queue says otherwise.
-4. When every topic is at level 4+, switch to full practice tests and the Diagnostician.
+1. If a topic's **Next review** is today or earlier, start with a 10-minute Examiner review of
+   it (not a full session).
+2. For the main session, pick the topic with the **lowest level** whose **dependencies are all at
+   level 3 or higher**.
+3. If there's a tie, go with the one higher up in this file, unless the **Next up** list says
+   otherwise.
+4. Once every topic is at level 4 or higher, switch to full practice tests and the Diagnostician.
 
 ## Map (Mapmaker output; update weekly)
 
-> Topic IDs are `area.topic` numbers (1.1, 1.2, 2.1 …). One area = one chapter, unit, or
-> theme. The two starter rows below show the format and teach the method itself — keep them
-> or replace them at intake.
+> Topic IDs are `area.topic` numbers (1.1, 1.2, 2.1 …). One area is one chapter, unit, or theme.
+> The two starter rows below show the format and teach how this system works. Keep them or
+> replace them at intake.
 >
-> The last column (**Times reviewed**) is optional: it counts reviews passed at the same or a
-> higher level, and `whats_due.py` uses it to show the next rung. Increase it on a pass, reset
-> it to 0 on a drop. Add the column when you want the extra guidance; the map works without it.
+> The last column (**Times reviewed**) is optional. It counts the reviews you passed at the same
+> or a higher level, and `whats_due.py` uses it to show the next gap. Add 1 when you pass, and
+> set it back to 0 when your level drops. Leave the column out if you don't want it. The map
+> still works, it just can't tell you which gap is next.
 
 | ID | Topic | Depends on | Where people get stuck | Practice task | Level | Last tested | Next review | Times reviewed |
 |----|-------|-----------|------------------------|---------------|-------|-------------|-------------|----------------|
@@ -83,8 +88,8 @@ stretch. `python3 whats_due.py` prints which rung is next for a topic, and how o
 
 ## Next up (Mapmaker output)
 
-> The next 6 sessions, highest priority first. Rewrite after every weekly ritual.
-> Empty for now — run the Mapmaker (`ai-tutor/prompts.md` §2).
+> The next 6 sessions, most important first. Rewrite this after every weekly ritual.
+> It's empty for now. Run the Mapmaker (`ai-tutor/prompts.md` §2) to fill it in.
 
 1.
 2.
@@ -95,18 +100,18 @@ stretch. `python3 whats_due.py` prints which rung is next for a topic, and how o
 
 ## Root causes (Diagnostician output, weekly)
 
-> Recurring misunderstandings, not one-off slips. Fix drills jump the queue.
+> Misunderstandings that keep coming back, not one-off slips. Their fix drills go before new topics.
 
 | Date found | Root misunderstanding | Evidence (mistake IDs) | Fix drill | Fixed? |
 |------------|----------------------|--------------------------|-----------|--------|
 | | | | | |
 
-## Review history (Examiner output — one row per review)
+## Review history (Examiner output, one row per review)
 
-> The receipt trail. After every Examiner run — and after any delayed check you do unaided
-> in chat — append one row: date, topic, the level you landed on, and `pass` (the level held
-> or rose) or `drop` (the level fell). `whats_due.py` reads these rows to show your 30-day
-> review pass rate. A `drop` also resets the topic's review ladder to +1 day.
+> After every Examiner quiz, and after any check you do in chat later on without help, add one
+> row: the date, the topic, the level you ended up at, and `pass` (the level stayed the same or
+> went up) or `drop` (it went down). `whats_due.py` reads these rows to show your pass rate for
+> the last 30 days. A `drop` also sends that topic's next review back to +1 day.
 
 | Date | Topic | Level | Result |
 |------|-------|-------|--------|
