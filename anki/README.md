@@ -5,7 +5,7 @@ logged **twice** (Clerk role, `ai-tutor/prompts.md` §10). Never turn a whole ch
 
 ## Files
 
-- `starter-deck.csv` — the 12-card starter deck. It teaches the learning science the system
+- `starter-deck.csv` — the 13-card starter deck. It teaches the learning science the system
   runs on, so it's useful for every subject. Import it into Anki, or just blitz it in the
   practice app (Flashcard blitz → load this file) — it works with or without Anki.
 - Your subject's decks appear here once the Clerk starts making cards. One CSV per area or
@@ -46,7 +46,7 @@ writes into the collection file):
 python3 import_anki.py --list          # show deck keys and target files
 python3 import_anki.py --dry-run       # report what would change, touch nothing
 python3 import_anki.py                 # add/update all decks (writes a timestamped backup first)
-python3 import_anki.py networking      # sync one deck key only
+python3 import_anki.py starter-deck    # sync one deck key only (the CSV file name)
 python3 import_anki.py --prune --confirm-prune   # also delete cards you removed from the CSV
 ```
 
@@ -61,7 +61,7 @@ Details worth knowing:
 - **Deletion is explicit and narrow.** `--prune` alone does nothing: `--confirm-prune` is
   required, and even then only notes the script created (tagged `studiolo-managed`) are removed.
   Your own cards are never touched.
-- **Backups.** Every real write snapshots the collection first (`collection-<timestamp>.anki2`
+- **Backups.** Every real write snapshots the collection first (`studiolo-backup-<timestamp>.anki2`
   next to it), and `--dry-run` validates the whole plan on a temporary copy, so a broken CSV
   can't damage your collection.
 - Missing the `anki` package, a missing collection, or a malformed CSV exits with code 1 and a

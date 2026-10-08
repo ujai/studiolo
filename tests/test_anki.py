@@ -102,6 +102,14 @@ class AnkiTests(unittest.TestCase):
             a.main(["--prune"])
         self.assertEqual(result.exception.code, 2)
 
+    def test_starter_deck_parses_into_three_columns(self):
+        # An unquoted comma in a front shifts the tags into the stable-ID column.
+        cards = a.read_cards(a.CSV_DIR / "starter-deck.csv")
+        self.assertEqual(len(cards), 13)
+        for front, back, tags, stable_id in cards:
+            self.assertIn(tags, ("studyskills", "studiolo"), front)
+            self.assertEqual(stable_id, "", front)
+
     def test_sqlite_snapshot_includes_wal_data(self):
         with tempfile.TemporaryDirectory() as tmp:
             source, dest = Path(tmp) / "original.db", Path(tmp) / "backup.db"
