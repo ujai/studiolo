@@ -6,7 +6,8 @@ Studiolo has two kinds of content, and they follow different rules.
 
 `whats_due.py`, `generate_topics.py`, `import_anki.py`, `practice/` (HTML, CSS, JS),
 `tests/`, `AGENTS.md`, `ai-tutor/`, `study-plan.md`, `templates.md`, `exam-day.md`,
-`resources.md`, and the `learner-map.md` schema (the format, not the rows).
+`resources.md`, `docs/learning-science.md`, and the `learner-map.md` schema (the format,
+not the rows).
 
 Rules:
 

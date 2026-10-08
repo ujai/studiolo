@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Print today's study queue from learner-map.md.
 
-Due reviews, the suggested next topic (the map's own picking rules), open root
-causes, the deadline countdown, and mistake-log counts. Run it first thing in
-every session, before you open anything else:
+Due reviews (capped at three on backlog days), the suggested next topic (the map's
+own picking rules), open root causes, the deadline countdown, the 30-day review
+pass rate, and mistake-log counts. Run it first thing in every session, before
+you open anything else:
 
     python3 whats_due.py
     python3 whats_due.py --file /tmp/fake-map.md    # try a different map
@@ -18,7 +19,10 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent
 DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 TOPIC_RE = re.compile(r"\d+\.\d+(?:\.\d+)*")
-REVIEW_STEPS = (1, 3, 7, 14)
+# The review ladder. The +30 rung needs a topic at level 4, the +60 rung level 5;
+# rung_days() enforces the caps. Question-level ladders in the practice app stay
+# at 1/3/7/14 — only topic reviews stretch with mastery.
+REVIEW_STEPS = (1, 3, 7, 14, 30, 60)
 
 
 def cells(line):
@@ -72,7 +76,20 @@ def parse_map(text):
     return topics
 
 
-def validate_map(topics, deadline=None):
+def parse_review_history(text):
+    """Rows of the `## Review history` table: date, topic, level, pass/drop."""
+    rows = []
+    for line in section(text, "Review history").splitlines():
+        if not line.startswith("|"):
+            continue
+        c = cells(line)
+        if len(c) < 4 or c[0].lower().startswith("date") or not c[0] or not c[1] or set(c[0]) <= {"-"}:
+            continue
+        rows.append({"date": c[0], "topic": c[1], "level": c[2], "result": c[3].lower()})
+    return rows
+
+
+def validate_map(topics, deadline=None, history=()):
     errors, ids = [], {t["id"] for t in topics}
     if len(ids) != len(topics):
         errors.append("Topic IDs must be unique.")
@@ -107,6 +124,20 @@ def validate_map(topics, deadline=None):
 
     for node in graph:
         visit(node)
+    for row in history:
+        try:
+            dt.date.fromisoformat(row["date"])
+            if not DATE_RE.fullmatch(row["date"]):
+                raise ValueError
+        except ValueError:
+            errors.append(f"Review history row: {row['topic'] or '?'} has an invalid date.")
+            continue
+        if row["topic"] not in ids:
+            errors.append(f"Review history row {row['date']}: unknown topic {row['topic']}.")
+        if row["level"] not in ("0", "1", "2", "3", "4", "5"):
+            errors.append(f"Review history row {row['date']} {row['topic']}: level must be 0-5.")
+        if row["result"] not in ("pass", "drop"):
+            errors.append(f"Review history row {row['date']} {row['topic']}: result must be pass or drop.")
     for field in ("date", "commit_by"):
         value = (deadline or {}).get(field)
         if value:
@@ -117,12 +148,24 @@ def validate_map(topics, deadline=None):
     return list(dict.fromkeys(errors))
 
 
+def rung_days(count, level):
+    """Days until the next review after the count-th consecutive pass.
+
+    The ladder tops out at +14 below level 4: only proven mastery earns long gaps
+    (+30 at level 4, +60 at level 5). `count` is clamped to the ladder's length.
+    """
+    rung = max(0, min(count - 1, len(REVIEW_STEPS) - 1))
+    if rung > 3:  # the +30/+60 rungs are gated by level
+        rung = 3 if level < 4 else (4 if level < 5 else rung)
+    return REVIEW_STEPS[rung]
+
+
 def next_review(previous_level, level, review_count, today):
     """Return (consecutive successful reviews, date) using the default topic policy."""
     if not 0 <= level <= 5 or not 0 <= previous_level <= 5 or review_count < 0:
         raise ValueError("Invalid level or review count.")
     count = 1 if level < previous_level else review_count + 1
-    return count, (today + dt.timedelta(days=REVIEW_STEPS[min(count - 1, 3)])).isoformat()
+    return count, (today + dt.timedelta(days=rung_days(count, level))).isoformat()
 
 
 def parse_intake_done(text):
@@ -223,12 +266,13 @@ def main(argv=None):
         return 1
     today = dt.date.today()
     deadline = parse_deadline(text)
-    errors = validate_map(topics, deadline)
+    history = parse_review_history(text)
+    errors = validate_map(topics, deadline, history)
     if errors:
         print("\n".join(f"ERROR: {e}" for e in errors), file=sys.stderr)
         return 1
     if args.check:
-        print(f"Map valid: {len(topics)} topics.")
+        print(f"Map valid: {len(topics)} topics, {len(history)} review-history rows.")
         return 0
     log = parse_mistake_log(Path(args.file).resolve().parent / "mistake-log.md")
 
@@ -261,15 +305,19 @@ def main(argv=None):
         head = "steady learning — no deadline"
     print(f"=== {today.isoformat()} · {head} ===\n")
 
-    # --- due reviews ---
+    # --- due reviews (backlog amnesty: cap a pile at three, most overdue first) ---
     due = plan["due"]
     if due:
+        shown = due[:3] if len(due) > 3 else due
         print(f"Due reviews ({len(due)}) — short unaided Examiner checks, prompt §5:")
-        for t in due:
+        for t in shown:
             overdue = (today - dt.date.fromisoformat(t["next_review"])).days
             when = "today" if overdue == 0 else f"{overdue} day{'s' if overdue != 1 else ''} overdue"
-            rung = REVIEW_STEPS[min(t["reviews"], len(REVIEW_STEPS) - 1)]
+            rung = rung_days(t["reviews"] + 1, t["level"])
             print(f"  {t['id']:4} {t['name'][:52]:52} level {t['level']} · {when} · +{rung}d if it holds")
+        if len(due) > len(shown):
+            print(f"  (+{len(due) - len(shown)} more waiting — clear the 3 above first; the rest are first in line tomorrow.)")
+            print("   A backlog is normal after time off. Welcome back — keep today's session short.")
         print()
     else:
         print("Due reviews: none today\n")
@@ -311,6 +359,21 @@ def main(argv=None):
         print(f"Root causes: {len(open_causes)} open, {len(causes) - len(open_causes)} fixed\n")
     else:
         print("Root causes: none logged\n")
+
+    # --- review history: the 30-day pass rate (the receipt trail in the map) ---
+    if history:
+        cutoff = (today - dt.timedelta(days=30)).isoformat()
+        recent = [r for r in history if r["date"] >= cutoff]
+        if recent:
+            passed = sum(1 for r in recent if r["result"] == "pass")
+            drops = len(recent) - passed
+            pct = round(100 * passed / len(recent))
+            print(f"Reviews, last 30 days: {len(recent)} logged — {passed} passed, "
+                  f"{drops} drop{'s' if drops != 1 else ''} ({pct}% holding)")
+        else:
+            print("Reviews, last 30 days: none logged — every Examiner run adds a row")
+    else:
+        print("Reviews: no history yet — one row per Examiner run starts it (learner-map.md → Review history)")
 
     # --- mistake log ---
     if log is None:

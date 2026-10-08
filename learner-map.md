@@ -44,12 +44,15 @@ Interviewer 10-line summary (pasted after the interview):
 | 1st | +1 day |
 | 2nd | +3 days |
 | 3rd | +7 days |
-| 4th+ | +14 days |
+| 4th | +14 days |
+| 5th | +30 days (level 4–5 only) |
+| 6th+ | +60 days (level 5 only) |
 | Level dropped | reset to +1 day |
 
-The practice app runs the same ladder over its own questions: miss one in any mode and it comes
-back after 1, 3, 7 and 14 days, and a miss sends it back to tomorrow. `python3 whats_due.py`
-prints which rung is next for a topic, and how overdue it is.
+Only proven mastery stretches the gaps: below level 4 the ladder tops out at +14 days, and
+`whats_due.py` applies that cap for you. The practice app's question ladder stays at 1, 3, 7
+and 14 days (a miss sends a question back to tomorrow) — topic reviews are the ones that
+stretch. `python3 whats_due.py` prints which rung is next for a topic, and how overdue it is.
 
 **Picking today's topic:**
 
@@ -92,3 +95,14 @@ prints which rung is next for a topic, and how overdue it is.
 | Date found | Root misunderstanding | Evidence (mistake IDs) | Fix drill | Fixed? |
 |------------|----------------------|--------------------------|-----------|--------|
 | | | | | |
+
+## Review history (Examiner output — one row per review)
+
+> The receipt trail. After every Examiner run — and after any delayed check you do unaided
+> in chat — append one row: date, topic, the level you landed on, and `pass` (the level held
+> or rose) or `drop` (the level fell). `whats_due.py` reads these rows to show your 30-day
+> review pass rate. A `drop` also resets the topic's review ladder to +1 day.
+
+| Date | Topic | Level | Result |
+|------|-------|-------|--------|
+| | | | |

@@ -10,11 +10,18 @@ How each task is used in a session (see `study-plan.md`):
 - **Socratic seed**: the first question for the Socratic questioner.
 - **Listener topic**: what your voice note, sketch, and 5-line written version must explain.
 - **Examiner focus**: what the escalating quiz should target.
+- **Example ladder** *(skill-heavy topics only, optional)*: for topics whose skill is running
+  a procedure — an integral, a git rebase, a verb form — the first meeting studies a fully
+  worked example, then completes a half-worked one, then fills a faded one (steps missing),
+  then solves a fresh one cold. Every later pass skips straight to solving cold. Examples
+  first is the best-replicated result for novices; the ladder stops helping once you're past
+  novice, which is why it's the first meeting only (see `docs/learning-science.md`).
 
 What "Do it" and "Break it" mean depends on the subject (the table in `AGENTS.md` §3): solve
 then mutate for math, recall then timeline-break for history, build then misconfigure for
 hands-on subjects, perform then isolate-and-slow for music. The Mapmaker writes tasks in
-whichever form fits; the five labels above never change.
+whichever form fits; the labels above never change. For a brand-new procedure, the Example
+ladder IS the first "Do it" — from the second pass on, "Do it" is solving a fresh variant cold.
 
 After intake, your agent adds one entry per topic here, in this format.
 

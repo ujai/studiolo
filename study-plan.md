@@ -75,8 +75,9 @@ Pick the topic using the rules in `learner-map.md` → "Picking today's topic" �
 7. **Socratic questioner** (prompt §4, 8 min): start with the task's **Socratic seed**.
 8. **Listener** (prompt §7, 8 min): 2-min voice note + quick sketch + 5-line written version
    of the **Listener topic**, all graded.
-9. **Examiner** (prompt §5, 9 min): escalating quiz on the **Examiner focus**. Write the
-   level, today's date, and the next review date into `learner-map.md`.
+9. **Examiner** (prompt §5, 9 min): escalating quiz on the **Examiner focus** — run it blind
+   (fresh chat or subagent). Write the level, today's date, and the next review date into
+   `learner-map.md`, plus one row in its **Review history**.
 
 ### Block D — Clerk + log (5 min)
 

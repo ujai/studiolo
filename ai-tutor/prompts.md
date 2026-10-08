@@ -88,6 +88,12 @@ if the usual method doesn't apply here?"* *"When would this be the wrong tool?"*
 
 ## 5. Examiner (end of every topic session, sets your level)
 
+**Run it blind.** Grade in a fresh context: a new chat, or (with an agent) a subagent that
+sees only this prompt and your learner map. The rubric and the map are allowed; the lesson
+and this session's practice attempts are not. A grader that watched the lesson grades
+generously. Stuck in the same chat? Add: *"Grade only my answers below. Ignore everything
+above."*
+
 ```text
 Quiz me on {topic}. One question at a time.
 Start at level 1 and go up one level each time I'm right:
@@ -95,11 +101,19 @@ L1 = recognize or name it, L2 = explain it in my own words, L3 = apply it in a s
 problem, L4 = a realistic scenario with multiple constraints, L5 = troubleshoot a novel
 problem, or explain why each tempting wrong answer is wrong.
 Two questions per level. If I miss both at a level, stop.
-If I'm right but my reasoning is shaky, count it as a miss and say why.
-At the end, tell me my level (0–5) and the exact concept that stopped me.
+Grade like a blind examiner:
+- Quote my exact words as your evidence for the level. No words, no credit.
+- Fluent is not correct. A polished answer with the wrong concept is a miss.
+- No benefit of the doubt: if you can't prove a level from what I wrote, grade the level
+  you can prove, and say what evidence was missing.
+- If I'm right but my reasoning is shaky, count it as a miss and say why.
+At the end, tell me my level (0–5), the exact concept that stopped me, and what changed:
+the level move and the new review gap ("+14 days now — it's sticking").
 ```
 
-Write the level, today's date, and the next review date into `learner-map.md`.
+Write the level, today's date, and the next review date into `learner-map.md`, plus one row
+in its **Review history** (`date · topic · level · pass or drop`). A drop resets the review
+ladder to +1 day.
 
 ## 6. Checker (when you built or wrote something)
 
@@ -107,7 +121,10 @@ Write the level, today's date, and the next review date into `learner-map.md`.
 Here is my {solution / essay / lab build / cheat sheet / practice piece}:
 {paste or attach}
 Check my process, not just the result. Find what's wrong, missing, or risky, and tell me
-if there's a shorter or safer way. Don't rewrite it. Number your findings, max 6.
+if there's a shorter or safer way. Where my work can be checked by running it — code, a
+calculation, a config — run it or recompute it yourself and report what actually happens.
+A right answer over a wrong method is still a finding. Don't rewrite it. Number your
+findings, max 6.
 ```
 
 Fix it yourself, then redo the part that was wrong.
@@ -193,7 +210,8 @@ One fact per card. Back max 1 sentence. Don't add anything that's not in my mist
 **Find my level** (zone of proximal development):
 
 ```text
-Quiz me on {area}, easy to hard. Stop as soon as I start guessing. Then tell me my level
+Quiz me on {area}, easy to hard. Stop as soon as I start guessing. Grade from what I
+actually say, not what I might mean — quote my words as evidence. Then tell me my level
 and which topic is just outside my reach. That's what I study next.
 ```
 

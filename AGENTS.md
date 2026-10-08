@@ -52,9 +52,10 @@ learner originally asked for.
 2. Ask which role the learner wants, or infer it from the session loop in `study-plan.md`.
    Default to producing roles (Socratic, Examiner, Listener, Sparring), not Explainer.
 3. Keep interactions short: 5–10 minute bursts, one question at a time.
-4. End by updating `learner-map.md` (levels, dates, times reviewed), the mistake log, and the
-   daily tracker, then commit. Export the app's new misses (Progress & export) into the log as
-   part of this step, so nothing sits only in a browser.
+4. End by updating `learner-map.md` (levels, dates, times reviewed, and a **Review history**
+   row for every Examiner run), the mistake log, and the daily tracker, then commit. Export
+   the app's new misses (Progress & export) into the log as part of this step, so nothing
+   sits only in a browser.
 
 ## 2. The 10 roles
 
@@ -75,6 +76,10 @@ Full prompts: `ai-tutor/prompts.md`. Role rules:
 
 - **Never hand over answers** in Socratic, Examiner, or Sparring mode. Push back on vague
   reasoning even when the answer is right.
+- **The Examiner grades blind**: in a fresh context (subagent, or a chat that never saw the
+  lesson) with only the rubric, the learner's written answers, and the map. Quote the learner's
+  own words as evidence for the level; fluent is not correct; no benefit of the doubt. A
+  grader that watched the lesson grades generously.
 - **Explainer**: only the exact stuck step, max ~6 lines, one analogy, then tell them to redo
   the whole task from scratch. Never the full steps up front.
 - **Clerk organizes, never adds.** Cards and notes come from the learner's own words. Mark
@@ -90,7 +95,7 @@ Adapt the loop to the subject. The Interviewer records this in Intake ("what cou
 | Subject type | Cold attempt | Break it (deliberately) | Sparring simulation |
 |--------------|--------------|--------------------------|---------------------|
 | Concept-heavy (history, biology) | closed-book recall, explain from a blank page | swap two events and explain why the timeline breaks; spot wrong claims | rapid-fire "why" questions; spot-the-error in a source |
-| Skill-heavy (math, physics, languages) | solve / translate / speak without notes | change one constraint and predict the effect before checking | timed problem sets; unscripted conversation; error-hunt in a worked solution |
+| Skill-heavy (math, physics, languages) | solve / translate / speak without notes (a brand-new procedure starts with the example ladder — `labs/practice-library.md`) | change one constraint and predict the effect before checking | timed problem sets; unscripted conversation; error-hunt in a worked solution |
 | Hands-on (IT, engineering, science labs) | build it before any tutorial | misconfigure it, watch it fail, fix it | symptom-first incident: they ask for facts one at a time and find the root cause |
 | Performance (music, art, sport) | perform or produce the piece | isolate the weakest bar, slow it down, fix it | perform under time pressure; critique round |
 
@@ -105,14 +110,26 @@ Adapt the loop to the subject. The Interviewer records this in Intake ("what cou
 - IDs are `area.topic` numbers (1.1, 2.3 …). One area = one chapter, unit, or theme. Never
   renumber existing topics: the practice app and the spaced schedules key on IDs.
 - Level is set by the Examiner and dated. Next review follows the ladder in the map
-  (+1/+3/+7/+14 days; reset on a drop).
+  (+1/+3/+7/+14 days, stretching to +30 at level 4 and +60 at level 5; reset on a drop).
 - **Times reviewed** (9th column) is optional but useful: it counts reviews passed at the same
   or a higher level, and `whats_due.py` uses it to show which rung is next. Increase it on a
   pass; reset it to 0 on a drop. Omit the column and the ladder still works — it just can't
   tell you the rung.
 - After editing the map, run `python3 generate_topics.py` (refreshes `practice/topics.js`, which
   the app needs) and `python3 whats_due.py --check` (catches duplicate IDs, bad levels, missing
-  dependencies, cycles, and impossible dates). Do both before you commit.
+  dependencies, cycles, impossible dates, and broken review-history rows). Do both before you
+  commit.
+
+**learner-map.md — Review history** (the Examiner writes it): after every Examiner run — and
+after any delayed retention check done unaided in chat — append one row to the
+`## Review history` table:
+
+```
+| Date | Topic | Level | Result |
+```
+
+Result is `pass` (the level held or rose) or `drop` (it fell). These rows are the receipt
+trail: `whats_due.py` turns them into the 30-day review pass rate.
 
 **practice/questions.js** (Examiner/Sparring material for the practice app):
 
@@ -148,7 +165,9 @@ Adapt the loop to the subject. The Interviewer records this in Intake ("what cou
 
 **labs/practice-library.md**: one entry per topic — **Do it** (the task), **Break it**
 (deliberate failure), **Socratic seed**, **Listener topic**, **Examiner focus**. Follow the
-format of the starter entries.
+format of the starter entries. Skill-heavy topics (a procedure to execute) add an optional
+**Example ladder** (study → complete → faded → solve): the first meeting climbs it, every
+later pass solves a fresh variant cold.
 
 **anki/*.csv** (`#Front,Back,Tags` header, plus an optional 4th `ID` column; quote fields
 containing commas; cloze decks use `#Text,Extra,Tags` with `{{c1::…}}` blanks): rows come ONLY

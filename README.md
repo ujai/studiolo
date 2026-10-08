@@ -20,8 +20,8 @@ Socratic questioner, sparring partner, diagnostician, clerk.
 
 | Piece | What it does |
 |-------|--------------|
-| `learner-map.md` | Source of truth: topics, levels (0–5), dependencies, spaced review dates, root causes |
-| `whats_due.py` | Prints today's queue: due reviews, next topic, priority fix drills, deadline countdown (`--check` validates the map) |
+| `learner-map.md` | Source of truth: topics, levels (0–5), dependencies, spaced review dates, review history, root causes |
+| `whats_due.py` | Prints today's queue: due reviews (capped at 3 on backlog days), next topic, priority fix drills, deadline countdown, 30-day review pass rate (`--check` validates the map) |
 | `ai-tutor/` | The 10 AI roles, with copy-paste prompts for any AI chat |
 | `practice/` | No-build practice app: timed sprints, pair drills, visual drills, spaced review, flashcard blitz, backup/restore |
 | `labs/practice-library.md` | One hands-on task per topic: do it, break it, fix it |
@@ -61,9 +61,11 @@ The rules that make it stick:
 - **Recall before review.** Try to produce it before you open your notes.
 - **Wrong twice = flashcard.** Only repeated misses become cards. No card spam.
 - **The ladder.** Miss a question → it returns after 1, 3, 7, then 14 days. Topics too: pass an
-  Examiner review and the next review moves further out; drop a level and it's back tomorrow.
-  The practice app runs the same ladder over its own questions: miss anything in any mode and it
-  comes back tomorrow.
+  Examiner review and the next review moves further out — a level-4 topic stretches to 30 days,
+  a level-5 one to 60; drop a level and it's back tomorrow. A backlog is met with amnesty:
+  `whats_due.py` caps a pile of overdue reviews at three and sends the rest to tomorrow, not to
+  a guilt list. The practice app runs its own 1/3/7/14 ladder over questions: miss anything in
+  any mode and it comes back tomorrow.
 - **Struggle first.** Ten minutes alone before you may ask for help — the window is yours to set
   at intake, and it only counts while you're actually working. The Explainer role answers
   only the one stuck step, in six lines or fewer, then you redo everything yourself.
@@ -138,7 +140,8 @@ Built by generalizing a real, working instance: an AWS CloudOps Engineer Associa
 repo used daily through a weeks-long sprint. The 10-role AI tutoring framework comes from
 Nick Saraev's ["AI can teach you almost ANYTHING"](https://www.youtube.com/watch?v=FSXHk4hMrY8),
 and the method is standard learning science: retrieval practice, spacing, interleaving,
-desirable difficulty (see *Make It Stick*, Brown, Roediger & McDaniel).
+desirable difficulty (see *Make It Stick*, Brown, Roediger & McDaniel — and
+[docs/learning-science.md](./docs/learning-science.md) for the source behind each rule).
 
 ## License
 

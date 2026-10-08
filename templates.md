@@ -38,6 +38,7 @@ Short on purpose. Fill these from your own head. The Clerk can tidy them later, 
 - Level: _ (was _)
 - Stopped by:
 - Next review date:
+- Review history row (date · topic · level · pass/drop):
 
 ## Mistakes logged: _   Cards made: _
 ```
