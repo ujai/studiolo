@@ -1,80 +1,81 @@
-# Resource Recommendations
+# Resources
 
-## Pick one of each. Then commit.
+## Pick one of each, then stick with it
 
-Decision fatigue is real. The plan works with any single combination; it fails when you keep
-switching. So:
+Choosing between too many options wears you out. The plan works with any one combination. It
+stops working when you keep switching. So pick:
 
-- **One authoritative source** (the thing that defines truth for your subject): the official
-  textbook, the teacher's or course notes, the official syllabus — for technical subjects, the
-  official documentation.
-- **One question bank** (things that make you produce): past papers, problem sets, official
-  practice questions — plus the practice app in this repo.
-- **One AI tutor**: any AI chat with the roles in `ai-tutor/prompts.md`, or an agent reading
+- **One authoritative source.** This is whatever decides what's correct for your subject: the
+  official textbook, your teacher's or course notes, or the official syllabus. For technical
+  subjects, it's the official documentation.
+- **One question bank.** Something that makes you answer questions: past papers, problem sets,
+  or official practice questions. The practice app in this repo counts too.
+- **One AI tutor.** Any AI chat with the roles in `ai-tutor/prompts.md`, or an agent that reads
   `AGENTS.md`.
-- **Optional**: Anki for flashcards (decks in `anki/`).
+- **Optional:** Anki for flashcards (the decks are in `anki/`).
 
-Not on the list: a second course, a third playlist, prettier notes. Every hour spent
-collecting resources is an hour not spent producing.
+You don't need a second course, a third playlist, or nicer notes. Every hour spent collecting
+resources is an hour you're not practising.
 
-## How to pick, by budget
+## What to pick, by budget
 
-### Zero budget
-- the official syllabus + whatever your teacher or school gives out
+### No budget
+- the official syllabus and whatever your teacher or school hands out
 - a free question bank (past papers, end-of-chapter problems)
-- the free tier of any AI chat
+- the free plan of any AI chat
 - the practice app (already in this repo)
 
 ### Some budget
 - the recommended textbook for the course
-- one official question bank or past-paper pack
-- AI chat (free tier is fine)
+- one official question bank or pack of past papers
+- an AI chat (the free plan is fine)
 
-### Certification / professional tests
-- the official exam guide and official practice questions first — always
-- one reputable course OR the official learning platform
-- one reputable practice-exam source
-- official docs as the "authoritative source" the rules keep mentioning
+### Certifications and professional exams
+- the official exam guide and official practice questions, always first
+- one well-reviewed course, or the official learning platform
+- one well-reviewed source of practice exams
+- the official docs as your authoritative source
 
-## Flashcard rules
+## Flashcards
 
-Only create flashcards for:
+Only make flashcards for:
 - things you got wrong twice
-- concepts you keep confusing
-- steps you keep misordering
+- ideas you keep mixing up
+- steps you keep putting in the wrong order
 
-Do **not** create flashcards for:
+Don't make flashcards for:
 - long definitions
-- giant paragraphs
+- whole paragraphs
 - every detail in the source
 
-Let the **Clerk** role (`ai-tutor/prompts.md` §10) turn your mistake log into CSV rows, but
-check every fact in your authoritative source first. AI invents details.
+The **Clerk** role (`ai-tutor/prompts.md` §10) can turn your mistake log into CSV rows. Check
+every fact in your authoritative source first, because AI makes up details.
 
-### Good flashcard examples
-- **Q:** What does rereading mostly build? — **A:** Familiarity, not recall.
-- **Q:** In this system, when does a mistake become a card? — **A:** When it's wrong twice.
+### Good examples
+- **Q:** What does rereading mostly build? **A:** Familiarity, not recall.
+- **Q:** In this system, when does a mistake become a card? **A:** When you get it wrong twice.
 
-## Use AI to find resources at your level
+## Use AI to find explanations at your level
 
-Your main resource won't explain every topic in a way that clicks. When one doesn't, use the
-"Find the best human explanation" prompt in `ai-tutor/prompts.md`. Give it your level from
-`learner-map.md`, and open every link it suggests to confirm it exists before you rely on it.
+Your main resource won't explain every topic in a way that makes sense to you. When it doesn't,
+use the "Find the best human explanation" prompt in `ai-tutor/prompts.md`. Give it your level
+from `learner-map.md`. Open every link it suggests to make sure it actually exists before you
+rely on it.
 
 ## What not to do
 
-- do not buy four books or courses
-- do not make giant pretty notes
-- do not spend the whole week watching videos
-- do not avoid practice tests because low scores feel bad
-- do not reread weak topics passively without testing yourself
-- do not use AI only to explain things; make it question, test, and grade you instead
+- don't buy four books or courses
+- don't spend hours making pretty notes
+- don't spend the whole week watching videos
+- don't skip practice tests because low scores feel bad
+- don't keep rereading weak topics without testing yourself
+- don't only ask AI to explain things. Have it question you, test you, and grade you.
 
-## Starter checklist
+## Day 1 checklist
 
-Do **Day 1 — Intake** in `study-plan.md`:
+Follow **Day 1: build your map** in `study-plan.md`:
 
-1. run the Interviewer, find-my-level, and Mapmaker prompts → fill in `learner-map.md`
-2. pick the one authoritative source and the one question bank
-3. import the starter deck only if you want Anki in the loop (Anki → File → Import, or
-   `python3 import_anki.py` for repeated syncs; see `anki/README.md`)
+1. run the Interviewer, "find my level", and Mapmaker prompts, and fill in `learner-map.md`
+2. pick your one authoritative source and your one question bank
+3. only import the starter deck if you want to use Anki (Anki → File → Import, or
+   `python3 import_anki.py` if you'll sync often; see `anki/README.md`)

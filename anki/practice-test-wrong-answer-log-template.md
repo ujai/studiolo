@@ -1,8 +1,8 @@
-# Practice-Test Wrong-Answer Log Template
+# Practice Test Wrong-Answer Log
 
-Use after every full-length practice test (not after short drills — those go straight into
-`mistake-log.md`). Log wrong **and** guessed-right answers: a lucky guess is a gap you got
-away with.
+Use this after every full-length practice test. Misses from short drills go straight into
+`mistake-log.md` instead. Log the questions you got wrong **and** the ones you got right by
+guessing, because a lucky guess is still something you don't know.
 
 ```md
 # Practice test — [date] — [source]
@@ -15,10 +15,10 @@ Time used: ___ of ___
 | 1 | | | | | | | |
 ```
 
-After logging:
+Then:
 
-1. Feed the whole table to the **Diagnostician** (`ai-tutor/prompts.md` §8): it returns max 3
-   root causes → write them into `learner-map.md` → Root causes.
-2. Run the fix drills it proposes; they jump the queue (root-cause fixes beat new topics).
-3. Copy each row into `mistake-log.md` with source role = Practice test. Anything seen before
-   becomes a flashcard (Clerk §10).
+1. Give the whole table to the **Diagnostician** (`ai-tutor/prompts.md` §8). It comes back with
+   at most 3 root causes. Write them into `learner-map.md` → Root causes.
+2. Do the fix drills it suggests before any new topics.
+3. Copy each row into `mistake-log.md` with source role = Practice test. Anything you've seen
+   before becomes a flashcard (Clerk, §10).

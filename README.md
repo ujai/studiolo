@@ -1,165 +1,173 @@
 # Studiolo
 
-> Your own little study. An AI-driven study system in plain markdown — any subject, any age.
+> A small study system in plain Markdown files. Any subject, any age.
 
-A *studiolo* was a Renaissance scholar's private study: one small room holding their books,
-maps, and instruments. This is yours — a folder your AI agent turns into a tutor that makes you
-**produce** answers instead of consuming explanations.
+A *studiolo* was a private study room in Renaissance Italy, where a scholar kept their books,
+maps, and tools. This repo is that room for you. You open it with an AI agent, and the agent
+becomes a tutor that keeps asking you to answer, explain, and build things yourself instead of
+just explaining things to you.
 
-## Why this exists
+## Why I made this
 
-Most studying is rereading, highlighting, and rewatching. It feels like learning, but the
-research is blunt: rereading mostly builds *familiarity*, not *recall*. What encodes memory is
-producing — retrieving, explaining, applying, failing, fixing.
+Most studying is rereading, highlighting, and rewatching. It feels productive, but rereading
+mostly makes the material look familiar. It doesn't train you to recall it. What actually
+helps you remember is pulling the answer out of your own head: recalling it, explaining it,
+using it, getting it wrong, and fixing it.
 
-And most people use AI exactly backwards: as an Explainer, which is just another way to
-consume. Studiolo puts AI to work on the jobs that make *you* work: interviewer, examiner,
-Socratic questioner, sparring partner, diagnostician, clerk.
+Most people also use AI as an explainer, and reading an explanation is still just reading.
+Studiolo gives the AI other jobs: interviewing you, quizzing you, asking you "why", timing you,
+and finding the pattern behind your mistakes.
 
 ## What's inside
 
-| Piece | What it does |
-|-------|--------------|
-| `learner-map.md` | Source of truth: intake, topics, levels (0–5), dependencies, spaced review dates, review history, root causes |
-| `whats_due.py` | Prints today's queue: due reviews (capped at 3 on backlog days), next topic, priority fix drills, deadline countdown, 30-day review pass rate, mistake-log counts (`--check` validates the map) |
-| `study-plan.md` | The daily session loop, the weekly ritual, and the final sprint before a test |
-| `ai-tutor/` | The 10 AI roles, with copy-paste prompts for any AI chat |
-| `practice/` | No-build practice app: timed sprints, pair drills, visual drills, spaced review, flashcard blitz, backup/restore |
-| `labs/practice-library.md` | One hands-on task per topic: do it, break it, fix it |
-| `mistake-log.md` | Every miss with the *why*. Wrong twice → becomes a flashcard |
-| `templates.md`, `daily-tracker.md` | Session, mistake-log, and weekly-ritual formats; the tick-box progress tracker |
-| `cheatsheets/` | One blank page per area, filled from your own head |
-| `exam-day.md` | Registration, scope re-checks at 30 and 7 days, test-day logistics, retakes |
-| `anki/` + `import_anki.py` | Optional Anki sync — or import the CSVs straight into Anki |
-| `generate_topics.py` | Regenerates `practice/topics.js` from the map, so the app and the map can't drift apart |
-| `docs/learning-science.md` | The research behind each rule |
+| File or folder | What it's for |
+|----------------|---------------|
+| `learner-map.md` | The main file. Your intake answers, topics, levels (0–5), dependencies, review dates, review history, and root causes. |
+| `whats_due.py` | Prints today's plan: due reviews (at most 3 on a backlog day), the next topic, fix drills, days to your deadline, your 30-day review pass rate, and mistake-log counts. `--check` validates the map. |
+| `study-plan.md` | The daily session, the weekly ritual (a bigger review every 6th session), and the final sprint before a test. |
+| `ai-tutor/` | The 10 AI roles, with prompts you can paste into any AI chat. |
+| `practice/` | A practice app with no install: timed questions, pair drills, diagrams, spaced review, flashcards, and backup/restore. |
+| `labs/practice-library.md` | One practice task per topic: do it, break it, fix it. |
+| `mistake-log.md` | Every miss and why it happened. Get something wrong twice and it becomes a flashcard. |
+| `templates.md`, `daily-tracker.md` | Formats for session notes, the mistake log, and the weekly ritual, plus a tick-box tracker. |
+| `cheatsheets/` | One blank page per area that you fill in from memory. |
+| `exam-day.md` | Booking the test, checking the syllabus at 30 and 7 days out, the test day itself, and retakes. |
+| `anki/` and `import_anki.py` | Optional Anki decks. Import the CSVs into Anki yourself, or sync them with the script. |
+| `generate_topics.py` | Rebuilds `practice/topics.js` from the map, so the app and the map always list the same topics. |
+| `docs/learning-science.md` | The research behind each rule. |
 
-![The practice app: a visual drill from the starter set](./docs/screenshot-drill.png)
+![The practice app showing a diagram drill from the starter set](./docs/screenshot-drill.png)
 
-## Quickstart (5 minutes)
+## Getting started (about 5 minutes)
 
-1. **Get your own copy** — fork, "Use this template", or clone. Keep it private: it will hold
-   your personal learning data.
-2. **Open the folder in an AI coding agent** (Droid, Claude Code, Cursor, Codex — anything that
-   reads `AGENTS.md`) and say: *"Help me study."*
-   The **Interviewer** fires first: up to 12 questions about your subject, deadline, level,
-   and how you'll be tested. For subjects or exams with a defined, changing scope (including
-   school curricula and professional certifications), it checks the latest official requirements
-   that apply to your target date when web lookup is available. If it cannot verify the source,
-   it asks you to provide the syllabus, exam guide, or current course materials before building
-   an aligned map and practice tasks.
-   Then the agent builds your learner map, question bank, and practice tasks.
-3. **Every day after**: run `python3 whats_due.py` (or just ask your agent) and do what the
-   queue says. 30–80 minutes. Until Intake says `Status: done`, the script only reminds you to
-   run the Interviewer.
+1. **Make your own copy.** Fork it, use "Use this template", or clone it. Keep your copy
+   private, because it will hold your own study data.
+2. **Open the folder in an AI coding agent** (Droid, Claude Code, Cursor, Codex, or anything
+   else that reads `AGENTS.md`) and say *"Help me study."*
 
-No agent? Fill in `learner-map.md` yourself and paste the role prompts from
-`ai-tutor/prompts.md` into any AI chat. The map, the daily queue, and the practice app all
-work without an agent too.
+   The agent starts as the Interviewer. It asks up to 12 questions about your subject, your
+   deadline, your level, and how you'll be tested. If you're studying for something with an
+   official syllabus that changes over time, like a school curriculum or a professional
+   certification, it looks up the current official requirements for your test date. If it
+   can't confirm them, it asks you for the syllabus, exam guide, or course materials before it
+   builds anything.
 
-## How it works
+   After that it builds your learner map, question bank, and practice tasks.
+3. **Every day after that,** run `python3 whats_due.py` (or ask your agent) and do what it
+   says. A session takes 30 to 80 minutes. Until the Intake in `learner-map.md` says
+   `Status: done`, the script only reminds you to do the interview first.
 
-The daily loop is the same every session; the map decides the topic:
+Don't have an agent? Fill in `learner-map.md` yourself and paste the prompts from
+`ai-tutor/prompts.md` into any AI chat. The map, the daily plan, and the practice app all work
+without one.
+
+## How a session works
+
+Every session follows the same steps. The map picks the topic.
 
 ```
-due reviews → recall 3 things cold → attempt the task → unblock ONE step →
-redo from scratch → break it on purpose → get examined (level 0–5) → log the misses → commit
+due reviews → recall 3 things from memory → try the task → get help on ONE stuck step →
+redo it from scratch → break it on purpose → get quizzed (level 0–5) → log mistakes → commit
 ```
 
-The rules that make it stick:
+The rules:
 
-- **Recall before review.** Try to produce it before you open your notes.
-- **Wrong twice = flashcard.** Only repeated misses become cards. No card spam.
-- **The ladder.** Miss a question → it returns after 1, 3, 7, then 14 days. Topics too: pass an
-  Examiner review and the next review moves further out — a level-4 topic stretches to 30 days,
-  a level-5 one to 60; drop a level and it's back tomorrow. A backlog is met with amnesty:
-  `whats_due.py` caps a pile of overdue reviews at three and sends the rest to tomorrow, not to
-  a guilt list. The practice app runs its own 1/3/7/14 ladder over questions: miss a question (or
-  get it right but tick "I guessed") in any drill and it comes back tomorrow. Flashcard blitz
-  is the exception: Anki schedules the cards.
-- **Struggle first.** Ten minutes alone before you may ask for help — the window is yours to set
-  at intake, and it only counts while you're actually working. The Explainer role answers
-  only the one stuck step, in six lines or fewer, then you redo everything yourself.
-- **Teach it simply.** If you can't explain it simply, you don't know it yet.
+- **Recall before you review.** Try to come up with the answer before you open your notes.
+- **Wrong twice, then a flashcard.** Only mistakes you make twice become cards, so your deck
+  stays small.
+- **Spaced reviews.** A missed question comes back after 1, 3, 7, and then 14 days. Topics
+  work the same way, but they can go longer: each time you pass a topic review, the next one
+  is further out, up to 30 days at level 4 and 60 days at level 5. If your level drops, the
+  topic comes back the next day. If you fall behind, `whats_due.py` only shows the 3 most
+  overdue reviews and moves the rest to tomorrow, so a backlog doesn't swamp you. The practice
+  app does the same 1, 3, 7, 14 days for single questions. A question you miss, or get right
+  but mark "I guessed", comes back the next day. Flashcard blitz is the exception, because
+  Anki schedules your cards.
+- **Struggle first.** Work on it alone for 10 minutes before you ask for help. You can pick a
+  different time at intake, and only time spent actually working counts. When you do ask, the
+  Explainer only explains the one step you're stuck on, in 6 lines or fewer. Then you redo
+  the whole task yourself.
+- **Explain it simply.** If you can't explain it in simple words, you don't know it yet.
 
-## Works for
+## What it works for
 
-| You are studying | "Produce" means |
-|------------------|-----------------|
-| School subjects (history, biology, …) | closed-book recall, timelines, cause→effect chains, essays, teach-back |
-| University courses | past-paper problems, derivations, error-hunting in worked solutions |
-| Professional certs (cloud, networking, accounting, …) | scenario questions, build-break-fix labs, incident drills |
+| What you're studying | What practice looks like |
+|----------------------|--------------------------|
+| School subjects (history, biology, and so on) | recalling with the book closed, timelines, cause and effect, essays, teaching it back |
+| University courses | past-paper problems, derivations, finding errors in worked solutions |
+| Professional certifications (cloud, networking, accounting, and so on) | scenario questions, build-and-break labs, troubleshooting drills |
 | Languages | speaking and writing from prompts, unscripted conversation, drills |
-| Anything skill-based (music, chess, art) | perform it, break it down, fix the weak step |
+| Skills (music, chess, art) | doing it, finding the weak part, fixing it |
 
-The Interviewer adapts the plan to the subject and the learner. A 12-year-old's math map looks
-different from a sysadmin's cert map. The system is the same.
+The Interviewer fits the plan to you and your subject. A 12-year-old's math map won't look like
+a sysadmin's certification map, but the system is the same.
 
-## Requirements
+## What you need
 
-- Any AI chat (free tier is fine), or an AI coding agent for the automated flow
-- Python 3.9+ for `whats_due.py`, `generate_topics.py` and `import_anki.py` — standard library
-  only, nothing to install
-- Anki, optional — import `anki/*.csv` directly (File → Import), or let `import_anki.py` do it
-  (that script needs the `anki` Python package)
-- A current browser (any recent Chrome, Edge, Firefox, or Safari) for the practice app
-- Nothing else. No server, no accounts, no build step, no API keys. `practice/index.html`
-  opens with a double-click.
+- Any AI chat (a free plan works), or an AI coding agent if you want it to do the setup for you
+- Python 3.9 or newer for `whats_due.py`, `generate_topics.py`, and `import_anki.py`. They only
+  use the standard library, so there's nothing to install.
+- Anki, if you want it. Import `anki/*.csv` with File → Import, or use `import_anki.py` (which
+  needs the `anki` Python package).
+- A recent browser (Chrome, Edge, Firefox, or Safari) for the practice app
+- That's it. There's no server, account, build step, or API key. Double-click
+  `practice/index.html` to open the app.
 
-## Developing
+## Working on the template
 
-Template changes are welcome — the rules are in [CONTRIBUTING.md](./CONTRIBUTING.md). Before you
-commit, run the checks:
+Changes to the template are welcome. The rules are in [CONTRIBUTING.md](./CONTRIBUTING.md).
+Run these before you commit:
 
 ```bash
-python3 -m unittest discover -s tests    # queue, Anki sync, and generated-metadata tests
+python3 -m unittest discover -s tests    # tests for the queue, Anki sync, and generated topics
 python3 whats_due.py --check             # learner-map.md is valid
 python3 generate_topics.py --check       # practice/topics.js matches learner-map.md
 ```
 
-Then open `practice/index.html` with a double-click and click through the tabs. The app is plain
-HTML/CSS/JS with no build step, so that file:// check is the real test.
+Then double-click `practice/index.html` and click through every tab. The app is plain
+HTML, CSS, and JavaScript with no build step, so opening it straight from the file is the real
+test.
 
 ## FAQ
 
-**Do I need to know how to code?** No. You edit markdown files — or don't even do that: your
-agent does the writing, you do the learning.
+**Do I need to know how to code?** No. Everything is Markdown files, and your agent can edit
+them for you.
 
-**Where do the practice questions come from?** Your agent generates them into
-`practice/questions.js` after intake, from your actual syllabus, following the schemas in
-`AGENTS.md`. Every question is written as an original — never copied from real, NDA'd, or
-copyrighted exam banks — and carries provenance pointing at the source behind it. The starter
-set teaches the learning science the system is built on.
+**Where do the practice questions come from?** After the interview, your agent writes them into
+`practice/questions.js` from your actual syllabus, using the format in `AGENTS.md`. Each question
+is written from scratch. None are copied from real exams or paid question banks. Each one also
+lists the source that backs up its answer. The starter questions are about the learning science
+this system uses.
 
-**Is this just Anki?** No. Anki stores facts you already have. Studiolo decides *what to study
-today* and at what difficulty, makes you produce full answers, finds the root cause behind
-your mistakes, and only then feeds the survivors into cards.
+**Is this just Anki?** No. Anki is good at keeping facts you've already learned. Studiolo
+decides what to study today and how hard, makes you write out full answers, and finds the
+cause behind repeated mistakes. Only the mistakes you keep making end up as Anki cards.
 
-**What about my data?** The repo holds markdown files and the app keeps its progress in this
-browser's storage — nothing is uploaded, and there is no telemetry. Two things to know:
+**What about my data?** Everything stays in the repo and in your browser. Nothing is uploaded,
+and there's no tracking. A few things to know:
 
-- Browser progress lives per browser and per device. Use **Progress & export → Download backup**
-  to move it, and keep the backup private.
-- "Local" covers the repo, not your AI. Whatever you paste into an AI chat goes to that
-  provider. Don't paste anything you wouldn't share with a tutor, and never publish your
-  learner map, mistake log, or tracker.
-- Want to share your copy publicly? Publish only a copy whose learner files are still blank, or
-  were never committed. Git keeps every old version, so deleting your rows later doesn't remove
-  them from the history. Your commit name and email are public too.
+- The practice app saves progress in the browser you use, on that device only. To move it, use
+  **Progress & export → Download backup**, and keep that file private.
+- Anything you paste into an AI chat goes to that AI company. Don't paste anything you wouldn't
+  show a tutor, and never publish your learner map, mistake log, or tracker.
+- If you want to make your copy public, only publish it while the learner files are still
+  blank, or if they were never committed. Git keeps every old version, so deleting your rows
+  later doesn't remove them from the history. Your commit name and email are public too.
 
-**A teacher, can I use this for a whole class?** Yes — run the Interviewer and Mapmaker once
-against your syllabus, then hand each student the pre-mapped copy. They (and their agents)
-take it from there.
+**I'm a teacher. Can I use this with a class?** Yes. Run the Interviewer and Mapmaker once with
+your syllabus, then give each student a copy of that map. They and their agents take it from
+there.
 
-## Origin and credits
+## Where it came from
 
-Built by generalizing a real, working instance: an AWS CloudOps Engineer Associate exam-prep
-repo used daily through a weeks-long sprint. The 10-role AI tutoring framework comes from
-Nick Saraev's ["AI can teach you almost ANYTHING"](https://www.youtube.com/watch?v=FSXHk4hMrY8),
-and the method is standard learning science: retrieval practice, spacing, interleaving,
-desirable difficulty (see *Make It Stick*, Brown, Roediger & McDaniel — and
-[docs/learning-science.md](./docs/learning-science.md) for the source behind each rule).
+I built this from a repo I used every day for several weeks while preparing for the AWS
+CloudOps Engineer Associate exam, then made it work for any subject. The 10 AI roles come from
+Nick Saraev's video ["AI can teach you almost ANYTHING"](https://www.youtube.com/watch?v=FSXHk4hMrY8).
+The method itself is standard learning science: practice recalling, space your reviews, mix
+similar topics together, and keep the work a bit hard. *Make It Stick* by Brown, Roediger, and
+McDaniel explains it well, and [docs/learning-science.md](./docs/learning-science.md) lists the
+research behind each rule.
 
 ## License
 
-MIT — see [LICENSE](./LICENSE).
+MIT. See [LICENSE](./LICENSE).

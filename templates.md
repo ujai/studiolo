@@ -1,6 +1,7 @@
 # Study Templates
 
-Short on purpose. Fill these from your own head. The Clerk can tidy them later, but never write them for you.
+These are short on purpose. Fill them in from memory. The Clerk can tidy them up afterwards,
+but it never writes them for you.
 
 ## 1) Session log (one per day)
 
@@ -8,25 +9,25 @@ Short on purpose. Fill these from your own head. The Clerk can tidy them later, 
 # Day [X] – [Date] – Topic [ID]
 
 ## Why this topic
-- Picked by learner map because: (lowest level / due review / root-cause fix)
+- The learner map picked it because: (lowest level / due review / root-cause fix)
 
-## Recall before studying (no looking)
+## What I remember before studying (no looking)
 -
 -
 -
 
-## Cold attempt
+## First attempt
 - Got as far as:
 - Stuck at:
 
-## Explainer used for (one step only)
+## What I asked the Explainer (one step only)
 -
 
-## Redo from scratch without help: done? yes / no
+## Redid it from scratch without help: yes / no
 ## Break it: what I broke, what the failure looked like, how I fixed it
 -
 
-## Socratic gaps found
+## Gaps the Socratic questions found
 1.
 2.
 3.
@@ -36,7 +37,7 @@ Short on purpose. Fill these from your own head. The Clerk can tidy them later, 
 
 ## Examiner
 - Level: _ (was _)
-- Stopped by:
+- What stopped me:
 - Next review date:
 - Review history row (date · topic · level · pass/drop):
 
@@ -45,10 +46,11 @@ Short on purpose. Fill these from your own head. The Clerk can tidy them later, 
 
 ## 2) Mistake log
 
-Every gap from the Socratic, Listener, Examiner, Sparring, and practice test sessions goes
-here. The Diagnostician reads this file, so keep the **Why** and **Root?** columns honest.
+Every gap from the Socratic, Listener, Examiner, Sparring, and practice-test sessions goes
+here. The Diagnostician reads this file, so be honest in the **Why wrong** and **Root?**
+columns.
 
-The live copy is [`mistake-log.md`](./mistake-log.md); this section defines the format.
+The real log is [`mistake-log.md`](./mistake-log.md). This section explains its format.
 
 ```md
 | ID | Date | Topic | Source role | What I said / chose | Correct | Why wrong | Missed clue | Root? | Seen before? |
@@ -57,17 +59,17 @@ The live copy is [`mistake-log.md`](./mistake-log.md); this section defines the 
 ```
 
 - **Source role**: Socratic / Listener / Examiner / Sparring / Practice test / Checker / Practice app (mode)
-- **Why wrong**: `concept-gap`, `misread-keyword`, `concept-confusion`, `rushed`, `overthought`, `bad-elimination`, `changed-correct-answer`
-- **Root?**: leave blank. The Diagnostician fills it in with a root cause ID (R1, R2…) on ritual day.
-- **Seen before? = yes** → second time wrong → the Clerk makes a flashcard.
+- **Why wrong**: pick one of `concept-gap`, `misread-keyword`, `concept-confusion`, `rushed`, `overthought`, `bad-elimination`, `changed-correct-answer`
+- **Root?**: leave it blank. The Diagnostician fills it in with a root cause ID (R1, R2…) during the weekly ritual.
+- **Seen before? = yes** means it's the second time you got it wrong, so the Clerk makes a flashcard.
 
 ### Example
 
 ```md
-| M7 | 2026-10-08 | 1.1 | Practice app (Exam sprint) | "One 3-hour session on Sunday" | "Six shorter sessions spread over the week" | concept-gap | "3 hours this week" — spacing beats cramming | R1 | no |
+| M7 | 2026-10-08 | 1.1 | Practice app (Exam sprint) | "One 3-hour session on Sunday" | "Six shorter sessions spread over the week" | concept-gap | "3 hours this week" means spread it out, don't cram | R1 | no |
 ```
 
-## 3) Listener sheet (teach-back)
+## 3) Listener sheet (teaching it back)
 
 ```md
 # Listener – Topic [ID] – [Date]
@@ -76,7 +78,7 @@ The live copy is [`mistake-log.md`](./mistake-log.md); this section defines the 
 (paste transcript)
 
 ## Sketch
-(photo link, or ASCII boxes + arrows)
+(photo link, or ASCII boxes and arrows)
 
 ## Written (5 lines max)
 1.
@@ -88,7 +90,7 @@ The live copy is [`mistake-log.md`](./mistake-log.md); this section defines the 
 ## Listener feedback
 - Missed:
 - Wrong:
-- Voice vs sketch vs written contradictions:
+- Where the voice, sketch, and written versions disagree:
 ```
 
 ## 4) Weekly ritual sheet
@@ -96,18 +98,18 @@ The live copy is [`mistake-log.md`](./mistake-log.md); this section defines the 
 ```md
 # Week [N] ritual – [Date]
 
-## Mini test (Sparring): __/30
+## Mini-test (Sparring): __/30
 - Weakest topics:
 
-## Diagnostician root causes (max 3)
+## Root causes from the Diagnostician (max 3)
 | ID | Root misunderstanding | Evidence (mistake IDs) | Fix drill |
 |----|----------------------|------------------------|-----------|
 | R1 | | | |
 
-## Rebuild from memory → Checker
+## Rebuild from memory, then Checker
 - Task rebuilt:
-- Checker findings:
-- Fixed and reran? yes / no
+- What the Checker found:
+- Fixed it and ran it again? yes / no
 
 ## Clerk cheat sheet
 - Area:
@@ -127,10 +129,10 @@ The live copy is [`mistake-log.md`](./mistake-log.md); this section defines the 
 ```md
 # Topic [ID]: [name]
 
-## What it is (2 sentences, own words)
+## What it is (2 sentences, in my own words)
 ## What I actually did
 ## The trap the test sets
 ## How to explain it simply (3 lines)
-## One problem I can now solve
+## One problem I can solve now
 ## Cards made (wrong twice only)
 ```
