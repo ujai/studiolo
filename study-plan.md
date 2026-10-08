@@ -22,9 +22,11 @@ Exam track     final sprint: practice tests → Diagnostician → targeted fixes
 ## Rules of engagement
 
 - **25-min blocks**: when the timer rings, switch activity. Never more than 25 min on one thing.
-- **Struggle before help**: at least 10 minutes alone before you ask the Explainer.
+- **Struggle before help**: a set window alone before you ask the Explainer — 10 minutes by
+  default, yours to change at intake, and it only counts while you're actually working.
 - **Redo without help**: whatever the Explainer helped with, redo from step 1 alone.
-- **Wrong twice = flashcard**: the Clerk only makes cards for repeated mistakes.
+- **Wrong twice = flashcard**: the Clerk only makes cards for repeated mistakes. Twice is the
+  default threshold; if you agreed on a different one at intake, that's the rule.
 - **Check AI facts**: verify every number, date, and detail in an authoritative source before it goes on a card.
 - **Commit the map**: `git commit` your updated `learner-map.md` and logs at the end of every session.
 
@@ -39,10 +41,11 @@ Exam track     final sprint: practice tests → Diagnostician → targeted fixes
 
 Low levels on Day 1 are good news: the map now knows where to send you.
 
-**The interview is gated.** Until Intake says `Status: done`, any AI session starts with the
+**The interview is gated.** Until Intake says `Status: done`, any AI study session starts with the
 Interviewer — agents via `AGENTS.md`, plain chats via the context block
 (`ai-tutor/prompts.md` §0). With an agent, the intake, levels, and Next up get written into
-`learner-map.md` for you. With a plain chat, you paste them in yourself.
+`learner-map.md` for you. With a plain chat, you paste them in yourself. Reviews, debugging,
+and other template maintenance do not require learner intake.
 
 ## Daily session loop (~80 min)
 
@@ -54,7 +57,9 @@ Pick the topic using the rules in `learner-map.md` → "Picking today's topic" �
 
 1. **Spaced review** (10 min): Anki due cards, if you use Anki. Then, for any topic whose
    **Next review** is today or earlier (`python3 whats_due.py` lists them), run a short
-   Examiner (prompt §5, stop at the first miss) and update its row.
+   Examiner (prompt §5, stop at the first miss) and update its row. If the practice app's
+   **Spaced review** tab has items due, clear those in the same block — same ladder, different
+   deck.
 2. **Recall before review** (2 min): write 3 things you remember about today's topic, without looking.
 3. **Cold attempt** (13 min): start the task's **Do it** step cold, before any tutorial. Get stuck. That's the point.
 
@@ -93,6 +98,8 @@ round in a chat (prompt §9). It still counts. Mark it `[~]` in the tracker.
 
 On a session day, add one **Pair picker** round on today's topic at the end of Block C, after
 the Examiner. Then export the misses (Progress & export → mistake-log rows) during Block D.
+Anything the app flagged as `needs-check` is a fact you haven't verified yet: check it in your
+authoritative source before it goes into your notes or cards.
 
 ## Weekly ritual (every 6th session, ~100 min)
 

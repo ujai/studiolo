@@ -7,6 +7,7 @@ every session, before you open anything else:
 
     python3 whats_due.py
     python3 whats_due.py --file /tmp/fake-map.md    # try a different map
+    python3 whats_due.py --check                    # validate the map, no queue
 """
 import argparse
 import datetime as dt
@@ -16,10 +17,27 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent
 DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
+TOPIC_RE = re.compile(r"\d+\.\d+(?:\.\d+)*")
+REVIEW_STEPS = (1, 3, 7, 14)
 
 
 def cells(line):
-    return [c.strip() for c in line.strip().strip("|").split("|")]
+    """Split a Markdown table row without treating escaped pipes as separators."""
+    row, cell, escaped = [], [], False
+    for char in line.strip().removeprefix("|").removesuffix("|"):
+        if escaped:
+            cell.append(char if char == "|" else "\\" + char)
+            escaped = False
+        elif char == "\\":
+            escaped = True
+        elif char == "|":
+            row.append("".join(cell).strip())
+            cell = []
+        else:
+            cell.append(char)
+    if escaped:
+        cell.append("\\")
+    return row + ["".join(cell).strip()]
 
 
 def section(text, heading):
@@ -34,20 +52,77 @@ def section(text, heading):
 
 def parse_map(text):
     topics = []
-    for line in text.splitlines():
+    for line in section(text, "Map").splitlines():
         if not line.startswith("|"):
             continue
         c = cells(line)
-        # Topic IDs are area.topic numbers (1, 1.1, 2.3, ...).
-        if len(c) < 8 or not re.fullmatch(r"\d+(?:\.\d+)*", c[0]):
+        if len(c) < 8 or not TOPIC_RE.fullmatch(c[0]):
             continue
         try:
             level = int(c[5])
         except ValueError:
-            level = 0
+            raise ValueError(f"Topic {c[0]}: Level must be an integer from 0 to 5.") from None
+        try:
+            reviews = int(c[8]) if len(c) > 8 and c[8] else 0
+        except ValueError:
+            raise ValueError(f"Topic {c[0]}: Review count must be a nonnegative integer.") from None
         deps = [] if c[2] in ("", "—", "-") else [d.strip() for d in c[2].split(",")]
-        topics.append({"id": c[0], "name": c[1], "deps": deps, "level": level, "next_review": c[7]})
+        topics.append({"id": c[0], "name": c[1], "deps": deps, "level": level,
+                       "last_tested": c[6], "next_review": c[7], "reviews": reviews})
     return topics
+
+
+def validate_map(topics, deadline=None):
+    errors, ids = [], {t["id"] for t in topics}
+    if len(ids) != len(topics):
+        errors.append("Topic IDs must be unique.")
+    for t in topics:
+        if not 0 <= t["level"] <= 5 or t["reviews"] < 0:
+            errors.append(f"Topic {t['id']}: invalid level or review count.")
+        for field in ("last_tested", "next_review"):
+            if t[field]:
+                try:
+                    dt.date.fromisoformat(t[field])
+                    if not DATE_RE.fullmatch(t[field]):
+                        raise ValueError
+                except ValueError:
+                    errors.append(f"Topic {t['id']}: {field} must be a real YYYY-MM-DD date.")
+        for dep in t["deps"]:
+            if dep not in ids:
+                errors.append(f"Topic {t['id']}: missing dependency {dep}.")
+    graph = {t["id"]: t["deps"] for t in topics}
+    visiting, visited = set(), set()
+
+    def visit(node):
+        if node in visiting:
+            errors.append(f"Dependency cycle involving {node}.")
+            return
+        if node in visited or node not in graph:
+            return
+        visiting.add(node)
+        for dep in graph[node]:
+            visit(dep)
+        visiting.remove(node)
+        visited.add(node)
+
+    for node in graph:
+        visit(node)
+    for field in ("date", "commit_by"):
+        value = (deadline or {}).get(field)
+        if value:
+            try:
+                dt.date.fromisoformat(value)
+            except ValueError:
+                errors.append(f"Deadline {field}: invalid date {value}.")
+    return list(dict.fromkeys(errors))
+
+
+def next_review(previous_level, level, review_count, today):
+    """Return (consecutive successful reviews, date) using the default topic policy."""
+    if not 0 <= level <= 5 or not 0 <= previous_level <= 5 or review_count < 0:
+        raise ValueError("Invalid level or review count.")
+    count = 1 if level < previous_level else review_count + 1
+    return count, (today + dt.timedelta(days=REVIEW_STEPS[min(count - 1, 3)])).isoformat()
 
 
 def parse_intake_done(text):
@@ -107,32 +182,64 @@ def parse_mistake_log(path):
     return rows, twice
 
 
-def suggest(topics):
+def suggest(topics, queue=()):
     """The map's picking rules: lowest level first, deps all at level 3+, map order breaks ties."""
     levels = {t["id"]: t["level"] for t in topics}
     eligible = [t for t in topics if all(levels.get(d, 0) >= 3 for d in t["deps"])]
-    eligible.sort(key=lambda t: t["level"])
+    priority = {}
+    for item in queue:
+        match = re.search(r"(?<![\d.])\d+\.\d+(?:\.\d+)*(?![\d.])", item)
+        if match:
+            priority.setdefault(match.group(), len(priority))
+    eligible.sort(key=lambda t: (t["level"], priority.get(t["id"], len(priority))))
     return eligible
+
+
+def build_queue(topics, queue, causes, today):
+    """Pure queue calculation; fix drills precede new-topic work, not due reviews."""
+    return {
+        "due": sorted((t for t in topics if t["next_review"] and
+                       t["next_review"] <= today.isoformat()), key=lambda t: t["next_review"]),
+        "fixes": [c for c in causes if not c["fixed"].lower().startswith("yes")],
+        "ranked": suggest(topics, queue),
+        "mastered": bool(topics) and all(t["level"] >= 4 for t in topics),
+    }
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Print today's study queue from learner-map.md.")
     ap.add_argument("--file", default=str(REPO / "learner-map.md"), help="path to a learner map")
+    ap.add_argument("--check", action="store_true", help="validate the map without starting study")
     args = ap.parse_args(argv)
 
-    text = Path(args.file).read_text(encoding="utf-8")
-    topics = parse_map(text)
+    try:
+        text = Path(args.file).read_text(encoding="utf-8")
+        topics = parse_map(text)
+    except (OSError, ValueError) as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 1
     if not topics:
         print("No topic rows found in the Map table. Is this a learner-map.md file?")
         return 1
     today = dt.date.today()
     deadline = parse_deadline(text)
-    log = parse_mistake_log(REPO / "mistake-log.md")
+    errors = validate_map(topics, deadline)
+    if errors:
+        print("\n".join(f"ERROR: {e}" for e in errors), file=sys.stderr)
+        return 1
+    if args.check:
+        print(f"Map valid: {len(topics)} topics.")
+        return 0
+    log = parse_mistake_log(Path(args.file).resolve().parent / "mistake-log.md")
 
     # --- interview gate ---
     if not parse_intake_done(text):
         print(">>> INTAKE NOT DONE: run the Interviewer first (ai-tutor/prompts.md §1),")
         print(">>> or just tell your agent \"help me study\". Nothing else happens until then.\n")
+        return 0
+    queue = parse_next_up(text)
+    causes = parse_root_causes(text)
+    plan = build_queue(topics, queue, causes, today)
 
     # --- header: deadline countdown ---
     if deadline["date"]:
@@ -151,24 +258,30 @@ def main(argv=None):
             else:
                 head += " Set the real date this week."
     else:
-        head = "no deadline in Intake — set one (a real test date beats a vague goal)"
+        head = "steady learning — no deadline"
     print(f"=== {today.isoformat()} · {head} ===\n")
 
     # --- due reviews ---
-    due = [t for t in topics if t["next_review"] and t["next_review"] <= today.isoformat()]
-    due.sort(key=lambda t: t["next_review"])
+    due = plan["due"]
     if due:
-        print(f"Due reviews ({len(due)}) — 10-min Examiner each, prompt §5, stop at first miss:")
+        print(f"Due reviews ({len(due)}) — short unaided Examiner checks, prompt §5:")
         for t in due:
             overdue = (today - dt.date.fromisoformat(t["next_review"])).days
             when = "today" if overdue == 0 else f"{overdue} day{'s' if overdue != 1 else ''} overdue"
-            print(f"  {t['id']:4} {t['name'][:52]:52} level {t['level']} · {when}")
+            rung = REVIEW_STEPS[min(t["reviews"], len(REVIEW_STEPS) - 1)]
+            print(f"  {t['id']:4} {t['name'][:52]:52} level {t['level']} · {when} · +{rung}d if it holds")
         print()
     else:
         print("Due reviews: none today\n")
 
     # --- next up queue ---
-    queue = parse_next_up(text)
+    open_causes = plan["fixes"]
+    if open_causes:
+        print(f"Priority fix drills ({len(open_causes)}) — before new-topic work:")
+        for c in open_causes:
+            print(f"  {c['cause'][:70]}")
+            print(f"       fix drill: {c['drill'][:70]}")
+        print()
     if queue:
         print("Next up queue (from the map):")
         for i, item in enumerate(queue[:6], 1):
@@ -178,8 +291,8 @@ def main(argv=None):
         print("Next up queue: empty — run the Mapmaker (ai-tutor/prompts.md §2)\n")
 
     # --- suggested main session ---
-    ranked = suggest(topics)
-    if ranked and ranked[0]["level"] >= 4:
+    ranked = plan["ranked"]
+    if plan["mastered"]:
         print("Every topic is at level 4+. The map says: switch to full practice tests + Diagnostician.\n")
     elif ranked:
         print("Suggested main session (lowest level first, dependencies at level 3+):")
@@ -189,18 +302,15 @@ def main(argv=None):
         if blocked:
             print(f"  ({blocked} topic{'s' if blocked != 1 else ''} skipped for now: dependencies still below level 3)")
         print()
+    else:
+        print("No eligible topic. Check dependencies or run the Mapmaker.\n")
 
     # --- root causes ---
-    open_causes = [c for c in parse_root_causes(text) if not c["fixed"].lower().startswith("yes")]
-    if open_causes:
-        print(f"Open root causes ({len(open_causes)}) — fix drills jump the queue:")
-        for c in open_causes:
-            print(f"  {c['date']}: {c['cause'][:70]}")
-            if c["drill"]:
-                print(f"       fix drill: {c['drill'][:70]}")
-        print()
+    # The open ones were already listed above as priority fix drills; here they only get counted.
+    if causes:
+        print(f"Root causes: {len(open_causes)} open, {len(causes) - len(open_causes)} fixed\n")
     else:
-        print("Open root causes: none\n")
+        print("Root causes: none logged\n")
 
     # --- mistake log ---
     if log is None:

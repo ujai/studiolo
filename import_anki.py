@@ -22,18 +22,27 @@ Sync rules, per deck:
 - A note in the deck whose front isn't in the CSV any more (for example the old version of a
   card that was reworded) is only reported, unless you pass --prune. Pruning deletes its
   review history.
-- Stray header notes ("Front"/"Text" as the front), left by manual imports, are always removed.
+- Notes are never deleted based on their text. Pruning only removes script-managed notes,
+  requires --confirm-prune, and creates a collection backup first.
+- Optional column 4 is a stable ID. Keep it unchanged to preserve history when rewording.
+- Dry runs open an isolated SQLite snapshot, not the original collection.
 """
 import argparse
 import csv
 import os
+import re
+import sqlite3
 import sys
+import tempfile
+import datetime as dt
 from pathlib import Path
+from urllib.parse import quote
 
 REPO_DIR = Path(__file__).resolve().parent
 CSV_DIR = REPO_DIR / "anki"
 DECK_PREFIX = "Studiolo"
-HEADER_FRONTS = {"front", "text"}
+MANAGED_TAG = "studiolo-managed"
+ID_PREFIX = "studiolo-id::"
 
 
 def default_collection():
@@ -61,70 +70,114 @@ def discover_decks():
 
 
 def read_cards(csv_path):
-    """Return [(front, back, tags)], skipping '#' comment lines and plain header rows."""
+    """Return (front, back, tags, optional stable ID); reject ambiguous CSVs."""
     cards = []
-    with open(csv_path, newline="", encoding="utf-8") as f:
-        for row in csv.reader(f):
+    fronts, ids = set(), set()
+    with open(csv_path, newline="", encoding="utf-8-sig") as f:
+        for row in csv.reader(f, strict=True):
             if not row or row[0].lstrip().startswith("#"):
                 continue
-            if row[0].strip().lower() in HEADER_FRONTS:
+            if not cards and [x.strip().lower() for x in row[:3]] in (
+                ["front", "back", "tags"], ["text", "extra", "tags"]
+            ):
                 continue
-            row = (row + ["", "", ""])[:3]
-            if row[0].strip():
-                cards.append((row[0], row[1], row[2]))
+            if not 2 <= len(row) <= 4:
+                raise ValueError(f"{csv_path}: expected 2–4 columns, got {len(row)}.")
+            row = (row + ["", "", ""])[:4]
+            if not row[0].strip():
+                continue
+            front, back, tags, stable_id = row
+            if front in fronts or (stable_id and stable_id in ids):
+                raise ValueError(f"{csv_path}: duplicate front or stable ID.")
+            if stable_id and not re.fullmatch(r"[A-Za-z0-9_-]+", stable_id):
+                raise ValueError(f"{csv_path}: stable IDs use letters, digits, '-' and '_'.")
+            if any(tag.startswith(ID_PREFIX) for tag in tags.split()):
+                raise ValueError(f"{csv_path}: identity tags are reserved; use column 4.")
+            fronts.add(front)
+            if stable_id:
+                ids.add(stable_id)
+            cards.append((front, back, tags, stable_id))
     return cards
 
 
-def sync_deck(col, deck_name, csv_path, notetype_name, dry_run, prune):
+def plan_deck(col, deck_name, cards, notetype_name, prune):
+    """Validate and calculate a complete plan without modifying any notes."""
     model = col.models.by_name(notetype_name)
-    if not model:
-        print(f"  ERROR: note type '{notetype_name}' not found. Open Anki once to create the defaults.")
-        return None
-
-    cards = read_cards(csv_path)
-    wanted = {front: (back, tags) for front, back, tags in cards}
-
-    existing = {}
-    stray_headers = []
+    if not model or len(model.get("flds", [])) != 2:
+        raise ValueError(f"Note type '{notetype_name}' must exist and have exactly two fields.")
+    existing, by_id, all_notes = {}, {}, []
     for nid in col.find_notes(f'"deck:{deck_name}" -"deck:{deck_name}::*"'):
         note = col.get_note(nid)
-        front = note.fields[0]
-        if front.strip().lower() in HEADER_FRONTS:
-            stray_headers.append(nid)
-        else:
-            existing[front] = note
-
-    added = updated = 0
-    to_update = []
-    deck_id = None if dry_run else col.decks.id(deck_name)
-    for front, (back, tags) in wanted.items():
-        csv_tags = col.tags.split(tags)
-        note = existing.get(front)
-        if note is None:
-            added += 1
-            if not dry_run:
-                new = col.new_note(model)
-                new.fields[0], new.fields[1] = front, back
-                new.tags = csv_tags
-                col.add_note(new, deck_id)
+        if note.mid != model["id"]:
             continue
+        if len(note.fields) != 2 or note.fields[0] in existing:
+            raise ValueError(f"{deck_name}: duplicate fronts or incompatible notes; resolve in Anki first.")
+        existing[note.fields[0]] = note
+        all_notes.append(note)
+        identities = [t for t in note.tags if t.startswith(ID_PREFIX)]
+        if len(identities) > 1:
+            raise ValueError(f"{deck_name}: note has multiple stable IDs.")
+        for identity in identities:
+            if identity in by_id:
+                raise ValueError(f"{deck_name}: duplicate stable IDs.")
+            by_id[identity] = note
+    additions, updates, matched = [], [], set()
+    for front, back, tags, stable_id in cards:
+        identity = ID_PREFIX + stable_id if stable_id else None
+        note = by_id.get(identity) if identity else None
+        front_note = existing.get(front)
+        if note and front_note and note.id != front_note.id:
+            raise ValueError(f"{deck_name}: stable ID and front match different notes.")
+        note = note or front_note
+        csv_tags = col.tags.split(tags) + [MANAGED_TAG] + ([identity] if identity else [])
+        if note is None:
+            additions.append((front, back, csv_tags))
+            continue
+        if note.id in matched:
+            raise ValueError(f"{deck_name}: two rows match the same note.")
+        if identity and any(t.startswith(ID_PREFIX) and t != identity for t in note.tags):
+            raise ValueError(f"{deck_name}: stable ID changed for an existing note.")
+        matched.add(note.id)
         merged_tags = sorted(set(note.tags) | set(csv_tags), key=str.lower)
-        if note.fields[1] != back or sorted(note.tags, key=str.lower) != merged_tags:
-            updated += 1
-            note.fields[1] = back
-            note.tags = merged_tags
-            to_update.append(note)
+        if note.fields != [front, back] or sorted(note.tags, key=str.lower) != merged_tags:
+            updates.append((note, front, back, merged_tags))
+    stale = [n.id for n in all_notes if n.id not in matched and MANAGED_TAG in n.tags]
+    return {"deck": deck_name, "model": model, "cards": len(cards), "additions": additions,
+            "updates": updates, "stale": stale, "removed": stale if prune else []}
 
-    stale = [n.id for front, n in existing.items() if front not in wanted]
-    removed = list(stray_headers) + (stale if prune else [])
+
+def apply_plan(col, plan):
+    deck_id = col.decks.id(plan["deck"])
+    for front, back, tags in plan["additions"]:
+        note = col.new_note(plan["model"])
+        note.fields[0], note.fields[1] = front, back
+        note.tags = tags
+        col.add_note(note, deck_id)
+    notes = []
+    for note, front, back, tags in plan["updates"]:
+        note.fields[0], note.fields[1] = front, back
+        note.tags = tags
+        notes.append(note)
+    if notes:
+        col.update_notes(notes)
+    if plan["removed"]:
+        col.remove_notes(plan["removed"])
+
+
+def sync_deck(col, deck_name, csv_path, notetype_name, dry_run, prune):
+    plan = plan_deck(col, deck_name, read_cards(csv_path), notetype_name, prune)
     if not dry_run:
-        if to_update:
-            col.update_notes(to_update)
-        if removed:
-            col.remove_notes(removed)
+        apply_plan(col, plan)
+    return {"cards": plan["cards"], "added": len(plan["additions"]),
+            "updated": len(plan["updates"]), "headers": 0,
+            "stale": len(plan["stale"]), "pruned": len(plan["removed"])}
 
-    return {"cards": len(wanted), "added": added, "updated": updated,
-            "headers": len(stray_headers), "stale": len(stale), "pruned": len(stale) if prune else 0}
+
+def snapshot_collection(source, destination):
+    """SQLite's backup API includes committed WAL data; copying the file alone does not."""
+    with sqlite3.connect(f"file:{quote(str(source))}?mode=ro", uri=True) as original:
+        with sqlite3.connect(str(destination)) as backup:
+            original.backup(backup)
 
 
 def main(argv=None):
@@ -134,8 +187,11 @@ def main(argv=None):
                         help="path to collection.anki2 (or set ANKI_COLLECTION)")
     parser.add_argument("--dry-run", action="store_true", help="report changes without writing")
     parser.add_argument("--prune", action="store_true", help="delete notes that are no longer in the CSV")
+    parser.add_argument("--confirm-prune", action="store_true", help="confirm deletion of managed notes and their review history")
     parser.add_argument("--list", action="store_true", help="list deck keys and exit")
     args = parser.parse_args(argv)
+    if args.prune and not args.dry_run and not args.confirm_prune:
+        parser.error("--prune deletes review history. Preview with --dry-run, then add --confirm-prune.")
 
     decks = discover_decks()
     if not decks:
@@ -151,6 +207,11 @@ def main(argv=None):
     if unknown:
         parser.error(f"unknown deck key(s): {', '.join(unknown)}. Use --list.")
     keys = args.decks or list(decks)
+    try:
+        card_sets = {key: read_cards(decks[key][1]) for key in keys}
+    except (OSError, ValueError, csv.Error) as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 1
 
     collection = Path(args.collection).expanduser()
     if not collection.exists():
@@ -160,37 +221,41 @@ def main(argv=None):
     try:
         from anki.collection import Collection
     except ImportError:
-        print("ERROR: the 'anki' Python package isn't installed (pip install anki, or install Anki desktop).")
+        print("ERROR: optional 'anki' Python package missing. Use Anki's File → Import instead,")
+        print("or install a matching anki package in a virtual environment (see anki/README.md).")
         return 1
 
     print(f"{'DRY RUN: ' if args.dry_run else ''}Syncing {len(keys)} deck(s) into {collection}")
-    col = Collection(str(collection))
-    totals = {"added": 0, "updated": 0, "headers": 0, "stale": 0, "pruned": 0}
     try:
-        for key in keys:
-            deck_name, csv_path, notetype = decks[key]
-            r = sync_deck(col, deck_name, csv_path, notetype, args.dry_run, args.prune)
-            if r is None:
-                continue
-            for k in totals:
-                totals[k] += r[k]
-            gone = "to remove" if args.dry_run else "removed"
-            stale_note = ""
-            if r["stale"]:
-                stale_note = f", {r['stale']} stale " + (gone if args.prune else "(not in CSV; use --prune)")
-            header_note = f", {r['headers']} stray header note(s) {gone}" if r["headers"] else ""
-            print(f"  {deck_name:34} {r['cards']:3} cards: {r['added']} added, {r['updated']} updated{stale_note}{header_note}")
-    finally:
-        col.close()
-
-    gone = "to remove" if args.dry_run else "removed"
-    print(f"\nTotal: {totals['added']} added, {totals['updated']} updated, "
-          f"{totals['headers']} header notes {gone}, {totals['stale']} stale"
-          + (f" ({totals['pruned']} {gone})" if args.prune else ""))
-    if args.dry_run:
-        print("Dry run: nothing was written.")
-    elif totals["stale"] and not args.prune:
-        print("Stale notes are old versions of cards that changed in the repo. Run with --prune to delete them.")
+        with tempfile.TemporaryDirectory(prefix="studiolo-anki-") as tmp:
+            snapshot = Path(tmp) / "collection.anki2"
+            snapshot_collection(collection, snapshot)
+            # Validation and dry runs use an isolated copy, never the real collection.
+            preview = Collection(str(snapshot))
+            try:
+                plans = [plan_deck(preview, decks[k][0], card_sets[k], decks[k][2], args.prune) for k in keys]
+                for plan in plans:
+                    print(f"  {plan['deck']}: {len(plan['additions'])} added, "
+                          f"{len(plan['updates'])} updated, {len(plan['stale'])} managed stale, "
+                          f"{len(plan['removed'])} {'would delete' if args.dry_run else 'to delete'}")
+            finally:
+                preview.close()
+            if args.dry_run:
+                print("Dry run: original collection was not opened by Anki or modified.")
+                return 0
+            backup = collection.with_name(f"studiolo-backup-{dt.datetime.now().strftime('%Y%m%d-%H%M%S-%f')}.anki2")
+            snapshot_collection(collection, backup)
+            print(f"Collection backup: {backup}")
+            col = Collection(str(collection))
+            try:
+                plans = [plan_deck(col, decks[k][0], card_sets[k], decks[k][2], args.prune) for k in keys]
+                for plan in plans:
+                    apply_plan(col, plan)
+            finally:
+                col.close()
+    except Exception as e:
+        print(f"ERROR: sync failed: {e}. Keep Anki closed and restore the backup if needed.", file=sys.stderr)
+        return 1
     return 0
 
 

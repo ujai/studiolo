@@ -1,13 +1,16 @@
 # Learner Map
 
-This file drives everything. Every session starts by reading it and ends by updating it.
+This file drives learner study sessions. Each study session starts by reading it and ends
+by updating it. Leave the starter Intake empty when maintaining the reusable template.
 Paste the **Intake**, **Map**, and **Root causes** sections into a plain AI chat at the start
-of each chat (`ai-tutor/prompts.md` §0); agents that read `AGENTS.md` do this automatically.
+of each study chat (`ai-tutor/prompts.md` §0); agents that read `AGENTS.md` do this automatically
+for study.
 
 ## Intake (Interviewer output, Day 1)
 
-> While the status below says `not done`, every session starts with the Interviewer
-> (`ai-tutor/prompts.md` §1) — whatever else you asked for. The Interviewer fills this in.
+> While the status below says `not done`, every study session starts with the Interviewer
+> (`ai-tutor/prompts.md` §1). This does not gate template maintenance. The Interviewer fills
+> this in when you start studying your subject.
 
 - Status: not done
 - Subject / goal:
@@ -44,6 +47,10 @@ Interviewer 10-line summary (pasted after the interview):
 | 4th+ | +14 days |
 | Level dropped | reset to +1 day |
 
+The practice app runs the same ladder over its own questions: miss one in any mode and it comes
+back after 1, 3, 7 and 14 days, and a miss sends it back to tomorrow. `python3 whats_due.py`
+prints which rung is next for a topic, and how overdue it is.
+
 **Picking today's topic:**
 
 1. A topic with **Next review ≤ today** gets a 10-minute Examiner review first (not a full session).
@@ -56,11 +63,15 @@ Interviewer 10-line summary (pasted after the interview):
 > Topic IDs are `area.topic` numbers (1.1, 1.2, 2.1 …). One area = one chapter, unit, or
 > theme. The two starter rows below show the format and teach the method itself — keep them
 > or replace them at intake.
+>
+> The last column (**Times reviewed**) is optional: it counts reviews passed at the same or a
+> higher level, and `whats_due.py` uses it to show the next rung. Increase it on a pass, reset
+> it to 0 on a drop. Add the column when you want the extra guidance; the map works without it.
 
-| ID | Topic | Depends on | Where people get stuck | Practice task | Level | Last tested | Next review |
-|----|-------|-----------|------------------------|---------------|-------|-------------|-------------|
-| 1.1 | How memory works *(starter demo)* | — | Familiarity vs recall: rereading feels productive but tests nothing | [task](./labs/practice-library.md#11-how-memory-works) | 0 | | |
-| 1.2 | How to practice *(starter demo)* | — | Cramming vs spacing; testing vs rereading; the wrong-twice rule | [task](./labs/practice-library.md#12-how-to-practice) | 0 | | |
+| ID | Topic | Depends on | Where people get stuck | Practice task | Level | Last tested | Next review | Times reviewed |
+|----|-------|-----------|------------------------|---------------|-------|-------------|-------------|----------------|
+| 1.1 | How memory works *(starter demo)* | — | Familiarity vs recall: rereading feels productive but tests nothing | [task](./labs/practice-library.md#11-how-memory-works) | 0 | | | |
+| 1.2 | How to practice *(starter demo)* | — | Cramming vs spacing; testing vs rereading; the wrong-twice rule | [task](./labs/practice-library.md#12-how-to-practice) | 0 | | | |
 
 ## Next up (Mapmaker output)
 

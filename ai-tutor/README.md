@@ -11,6 +11,10 @@ You learn by **producing**, not by **consuming**.
 | Reread 4 times | 83% | 40% |
 | Read once + tested 3 times | 71% | 61% |
 
+Those numbers are from Roediger & Karpicke (2006), *Psychological Science* 17(3), 249–255
+(<https://doi.org/10.1111/j.1467-9280.2006.01693.x>) — repeated studying versus repeated
+testing. If you quote them elsewhere, cite the paper, not this README.
+
 Rereading *feels* like learning. Testing *is* learning. Most people only use AI as an
 **Explainer**, which is just another way to consume. The other nine roles make you produce:
 recall, predict, explain, build.
@@ -38,7 +42,9 @@ Copy-paste prompts for every role are in [`prompts.md`](./prompts.md). The daily
 The video warns that AI can kill learning, the same way GPS weakens your sense of direction.
 Struggle is where memory forms. So:
 
-1. **Struggle first.** Try the task or question alone for at least 10 minutes before asking the Explainer.
+1. **Struggle first.** Try the task or question alone before asking the Explainer. Ten minutes
+   is the default window; set your own at intake, and count only the time you're actually
+   working, not staring.
 2. **Explain only the stuck part.** Never ask AI for the full task steps up front.
 3. **Redo from scratch without help.** After the Explainer unblocks you, restart the task from step 1 alone. This costs about 10–15% extra time and is where the learning sticks.
 4. **Don't trust AI facts.** AI invents numbers, dates, and details. Check every fact against an authoritative source for your subject before it goes on a card or cheat sheet.
@@ -55,16 +61,23 @@ to install.
 
 | Mode | What it covers |
 |------|----------------|
-| Exam sprint (timed per question, "I guessed" flag) | Examiner + Sparring under real test conditions |
-| Pair picker (10 s per clue) | Rapid retrieval of the pairs your subject confuses |
+| Exam sprint (2, 3 or 5 minutes per question, or no timer, "I guessed" flag) | Examiner + Sparring under real test conditions |
+| Pair picker (10 s or 20 s per clue, or no timer) | Rapid retrieval of the pairs your subject confuses |
 | Visual drills (place parts in a diagram, order the steps) | Showing what you know visually, not only in words |
-| Flashcard blitz (loads `anki/*.csv`) | Spaced-repetition reps between Anki sessions |
+| Flashcard blitz (loads `anki/*.csv`) | Speed reps on your own cards; Anki still owns their scheduling |
 | Spaced review | Every miss in any mode comes back after 1, 3, 7 and 14 days |
-| Progress & export | Clerk: misses become mistake-log rows, and anything missed twice becomes Anki rows |
+| Progress & export | Clerk: misses become mistake-log rows, anything missed twice becomes Anki rows, plus backup/restore |
 
 **Spaced review** is this repo's own addition, not from the video: every miss comes back
 after 1, 3, 7 and 14 days until you've beaten it — the same ladder the map uses for topic
-reviews in `learner-map.md`.
+reviews in `learner-map.md`. Answering a due item right moves it up a rung; missing it sends it
+back to tomorrow. The schedule is rebuilt from your answer history, so a backup carries it.
+
+Progress is saved in this browser only. Progress & export has **Download backup** and
+**Restore**, which is how you move it to another browser or machine. The app also checks the
+`provenance` block on every question: anything you marked `needs-check` is flagged on screen,
+and a question with no provenance at all refuses to load — a quiz that teaches wrong facts is
+worse than no quiz.
 
 The app can't interview you or grade free-text explanations. It has no AI behind it, so the
 Interviewer, Socratic, Listener, and Diagnostician roles still happen in an AI chat (or with

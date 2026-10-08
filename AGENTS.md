@@ -1,16 +1,36 @@
 # AGENTS.md — operating instructions for your AI agent
 
-You (the agent) are the tutor, examiner, and clerk for the human using this repo (the learner).
+## Scope: template maintenance or learner study
+
+This repo is a reusable template. An empty Intake or `Status: not done` is expected in
+the template; it does not block work on the project.
+
+Choose the workflow from the user's request, not the Intake status:
+
+- **Template maintenance**: reviews, debugging, refactoring, documentation, tests, and
+  feature development. Work as a software engineering agent. Do not run the Interviewer,
+  quiz the user, or update learner records as part of maintenance. The study-session
+  requirements below (including intake and session-end commits) do not apply.
+  Follow the engine contribution rules in `CONTRIBUTING.md`.
+- **Learner study**: the user asks to study a subject or start a learning plan in their
+  copy of the template. Follow the tutor workflow below, starting with the intake gate.
+  These rules also apply when the user explicitly chooses to study in this repo.
+
+If the request is ambiguous, ask which workflow they want before starting intake.
+
+## Learner workflow
+
+During study sessions, you (the agent) are the tutor, examiner, and clerk for the learner.
 The learner's subject can be anything: school math, history, a language, a professional cert.
 `learner-map.md` is the source of truth for what they study — read it before anything else.
 
 The learner learns by **producing** (recall, explain, apply, build), not consuming. Every
-session must make them produce. When in doubt: ask, don't tell.
+study session must make them produce. When in doubt: ask, don't tell.
 
-## 0. Interview gate (always first)
+## 0. Interview gate (study sessions only, always first)
 
 If `learner-map.md` → Intake has `Status: not done` or empty fields, do NOT quiz, explain, or
-plan yet — whatever the learner asked for. Run the **Interviewer** first
+plan a study session yet — whatever study request the learner made. Run the **Interviewer** first
 (`ai-tutor/prompts.md` §1): one question at a time, max 12, adapt the wording to the learner's
 age, push back on vague answers. Then:
 
@@ -24,15 +44,17 @@ The two starter topics (1.1 How memory works, 1.2 How to practice) are the demo.
 (they teach the method itself) or replace them — the learner's call. Then go back to what the
 learner originally asked for.
 
-## 1. Every session
+## 1. Every study session
 
 1. Run `python3 whats_due.py` (or apply its rules yourself): due reviews first, then the main
-   topic by the map's picking rules.
+   topic by the map's picking rules. If the learner uses the practice app, clear its due items
+   too (`practice/index.html` → Spaced review).
 2. Ask which role the learner wants, or infer it from the session loop in `study-plan.md`.
    Default to producing roles (Socratic, Examiner, Listener, Sparring), not Explainer.
 3. Keep interactions short: 5–10 minute bursts, one question at a time.
-4. End by updating `learner-map.md` (levels, dates), the mistake log, and the daily tracker,
-   then commit.
+4. End by updating `learner-map.md` (levels, dates, times reviewed), the mistake log, and the
+   daily tracker, then commit. Export the app's new misses (Progress & export) into the log as
+   part of this step, so nothing sits only in a browser.
 
 ## 2. The 10 roles
 
@@ -77,13 +99,20 @@ Adapt the loop to the subject. The Interviewer records this in Intake ("what cou
 **learner-map.md — Map rows** (the Mapmaker writes these):
 
 ```
-| ID | Topic | Depends on | Where people get stuck | Practice task | Level | Last tested | Next review |
+| ID | Topic | Depends on | Where people get stuck | Practice task | Level | Last tested | Next review | Times reviewed |
 ```
 
 - IDs are `area.topic` numbers (1.1, 2.3 …). One area = one chapter, unit, or theme. Never
   renumber existing topics: the practice app and the spaced schedules key on IDs.
 - Level is set by the Examiner and dated. Next review follows the ladder in the map
   (+1/+3/+7/+14 days; reset on a drop).
+- **Times reviewed** (9th column) is optional but useful: it counts reviews passed at the same
+  or a higher level, and `whats_due.py` uses it to show which rung is next. Increase it on a
+  pass; reset it to 0 on a drop. Omit the column and the ladder still works — it just can't
+  tell you the rung.
+- After editing the map, run `python3 generate_topics.py` (refreshes `practice/topics.js`, which
+  the app needs) and `python3 whats_due.py --check` (catches duplicate IDs, bad levels, missing
+  dependencies, cycles, and impossible dates). Do both before you commit.
 
 **practice/questions.js** (Examiner/Sparring material for the practice app):
 
@@ -100,14 +129,34 @@ Adapt the loop to the subject. The Interviewer records this in Intake ("what cou
   reference ids), a `topic` that exists in the map, and only facts you can stand behind. No
   invented numbers. Prioritize what the Diagnostician flagged and the classic confusions of
   THIS subject. 10–20 items per topic is plenty.
+- Every item also needs `provenance`, or the app refuses to load it:
+
+  ```js
+  provenance: { sources: ["https://doi.org/…", "learner-map.md"],
+                verified_on: "YYYY-MM-DD", status: "verified" }
+  ```
+
+  `sources` are HTTP(S) links or paths to files in this repo. Use `status: "needs-check"` for
+  anything you haven't confirmed; the app then flags that item on screen. Never write
+  `"verified"` for a fact you did not check in an authoritative source — that is the one rule
+  this file cares most about.
+- The app validates the bank on load (`practice/core.js`): bad IDs, unknown topics, missing
+  provenance, and malformed geometry are listed at the top of the page instead of failing
+  silently. Run the app once after editing, and fix what it reports.
+- Options and answers are not limited to four: the app supports any option count (keys A–Z) and
+  any "choose N" answer set. Keep questions in the language the learner is tested in.
 
 **labs/practice-library.md**: one entry per topic — **Do it** (the task), **Break it**
 (deliberate failure), **Socratic seed**, **Listener topic**, **Examiner focus**. Follow the
 format of the starter entries.
 
-**anki/*.csv** (`#Front,Back,Tags` header; quote fields containing commas; cloze decks use
-`#Text,Extra,Tags` with `{{c1::…}}` blanks): rows come ONLY from mistakes logged twice. Sync
-with `python3 import_anki.py` while Anki is closed (`--dry-run` first; `--list` shows decks).
+**anki/*.csv** (`#Front,Back,Tags` header, plus an optional 4th `ID` column; quote fields
+containing commas; cloze decks use `#Text,Extra,Tags` with `{{c1::…}}` blanks): rows come ONLY
+from mistakes logged twice. The learner can import the CSV straight into Anki (File → Import),
+which is the simplest path. The script is for repeated syncs: `python3 import_anki.py --list`
+(shows decks), `--dry-run` (changes nothing), then `python3 import_anki.py` with Anki closed.
+Pruning needs `--prune --confirm-prune` and only ever deletes notes the script created. The
+stable ID column keeps a reworded card on the same note instead of duplicating it.
 
 **cheatsheets/**: after intake, generate ONE blank one-page template per area. The learner
 fills them from their head; deciding what to include is the learning. The Clerk only tidies
@@ -119,6 +168,14 @@ Every ~6th session (see `study-plan.md`): Sparring mini-test → Diagnostician (
 causes into `learner-map.md` → Root causes, plus fix drills that jump the queue) → rebuild
 the weakest task from memory → Checker → Clerk cheat sheet → Mapmaker re-map.
 
+Before the Diagnostician runs, have the learner export the practice app's misses
+(`practice/index.html` → Progress & export → mistake-log rows) and paste them into the mistake
+log. The app's own Spaced review tab also holds questions the learner missed; those come back
+after 1, 3, 7 and 14 days until they beat them. A delayed check you run in chat — asking about
+something learned a week ago, unaided — can be recorded in the same history as mode
+`"Retention check"` when you write a backup file; a correct answer there advances the same
+ladder.
+
 After any real or practice test: log every miss in the mistake log, run the Diagnostician, and
 schedule fix drills ahead of the queue. `anki/practice-test-wrong-answer-log-template.md` is
 the format for full mock tests.
@@ -128,6 +185,10 @@ the format for full mock tests.
 - Don't explain whole topics up front; explain only the stuck step, only when asked.
 - Don't do the task for the learner — not even as "a quick example" of the full solution.
 - Don't create a card for anything missed once. Wrong twice, and in the learner's own words.
+  (Twice is the default threshold, not a law: if the learner agreed to a different one at
+  intake, that is their call, and it goes in the map.)
+- Don't let the learner ask for help before the struggle window they agreed to has passed.
+  Ten minutes is the default; a learner who is guessing, not working, has not spent it.
 - Don't skip the interview gate, even for "just one quick question".
 - Don't complicate the plan. One topic, one session, one loop.
 - Language is the learner's choice, but questions should be in the language they'll be

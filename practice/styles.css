@@ -1,0 +1,102 @@
+  :root {
+    --bg: #0f172a; --card: #1e293b; --card2: #273449; --border: #334155;
+    --text: #e2e8f0; --muted: #94a3b8;
+    --cyan: #22d3ee; --emerald: #34d399; --violet: #a78bfa;
+    --amber: #fbbf24; --rose: #fb7185;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'JetBrains Mono', ui-monospace, monospace; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
+  header { text-align: center; padding: 1.25rem 1rem 0.75rem; border-bottom: 1px solid var(--border); }
+  header h1 { font-size: 1.05rem; color: var(--cyan); }
+  header p { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.6rem; justify-content: center; position: sticky; top: 0; background: var(--bg); z-index: 10; border-bottom: 1px solid var(--border); }
+  .tab { padding: 0.4rem 0.8rem; font: inherit; font-size: 0.75rem; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--muted); cursor: pointer; }
+  .tab:hover { border-color: var(--cyan); color: var(--cyan); }
+  .tab.active { background: rgba(34,211,238,0.15); border-color: var(--cyan); color: var(--cyan); }
+  main { max-width: 900px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1rem 1.1rem; margin-bottom: 1rem; }
+  h2 { font-size: 0.95rem; margin-bottom: 0.6rem; color: var(--cyan); }
+  h3 { font-size: 0.85rem; margin: 0.8rem 0 0.4rem; }
+  .muted { color: var(--muted); font-size: 0.78rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 0.4rem 0; }
+  label.inline { display: flex; gap: 0.35rem; align-items: center; font-size: 0.8rem; color: var(--muted); }
+  select, input[type=text], textarea { font: inherit; font-size: 0.8rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.45rem; }
+  textarea { width: 100%; min-height: 160px; }
+  button.btn { font: inherit; font-size: 0.8rem; padding: 0.45rem 0.9rem; border-radius: 4px; border: 1px solid var(--cyan); background: rgba(34,211,238,0.12); color: var(--cyan); cursor: pointer; }
+  button.btn:hover { background: rgba(34,211,238,0.25); }
+  button.btn.ghost { border-color: var(--border); background: transparent; color: var(--muted); }
+  button.btn.danger { border-color: var(--rose); color: var(--rose); background: transparent; }
+  button.btn:disabled { opacity: 0.4; cursor: default; }
+  .badge { display: inline-block; font-size: 0.68rem; padding: 0.1rem 0.45rem; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); }
+  .badge.d1 { color: var(--cyan); border-color: var(--cyan); }
+  .badge.d2 { color: var(--emerald); border-color: var(--emerald); }
+  .badge.d3 { color: var(--violet); border-color: var(--violet); }
+  .badge.d4 { color: var(--rose); border-color: var(--rose); }
+  .badge.d5 { color: var(--amber); border-color: var(--amber); }
+  .qtop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; gap: 0.5rem; }
+  .timer { font-size: 0.9rem; color: var(--amber); font-variant-numeric: tabular-nums; }
+  .timer.low { color: var(--rose); }
+  .qtext { font-size: 0.92rem; margin-bottom: 0.8rem; }
+  .opt { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.55rem 0.7rem; margin: 0.35rem 0; border: 1px solid var(--border); border-radius: 5px; cursor: pointer; background: var(--card2); }
+  .opt:hover { border-color: var(--cyan); }
+  .opt input { margin-top: 0.25rem; }
+  .opt .key { color: var(--muted); font-size: 0.75rem; min-width: 1.2rem; }
+  .opt.right { border-color: var(--emerald); background: rgba(52,211,153,0.12); }
+  .opt.wrong { border-color: var(--rose); background: rgba(251,113,133,0.12); }
+  .feedback { margin-top: 0.8rem; padding: 0.7rem 0.8rem; border-radius: 5px; font-size: 0.82rem; border-left: 3px solid var(--border); background: var(--card2); }
+  .feedback.ok { border-left-color: var(--emerald); }
+  .feedback.bad { border-left-color: var(--rose); }
+  .big { font-size: 1.6rem; color: var(--cyan); }
+  .pairbtns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem; }
+  .pairbtn { font: inherit; font-size: 0.95rem; padding: 1.2rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: var(--card2); color: var(--text); cursor: pointer; }
+  .pairbtn:hover { border-color: var(--cyan); }
+  .pairbtn.right { border-color: var(--emerald); background: rgba(52,211,153,0.15); }
+  .pairbtn.wrong { border-color: var(--rose); background: rgba(251,113,133,0.15); }
+  .clue { font-size: 1.05rem; text-align: center; padding: 1rem 0.5rem 0.2rem; }
+  .bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: 0.5rem; }
+  .bar > div { height: 100%; background: var(--amber); transition: width 0.1s linear; }
+  .diagram { position: relative; width: 100%; aspect-ratio: 800 / 480; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; margin: 0.6rem 0; }
+  .diagram svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .slot { position: absolute; width: 21.5%; display: flex; flex-direction: column; gap: 2px; }
+  .slot .cap { font-size: 0.62rem; color: var(--muted); line-height: 1.15; }
+  .slot select { font-size: 0.66rem; padding: 0.2rem; width: 100%; }
+  .slot select.right { border-color: var(--emerald); color: var(--emerald); }
+  .slot select.wrong { border-color: var(--rose); color: var(--rose); }
+  .slot .fix { font-size: 0.6rem; color: var(--emerald); }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0; }
+  .chip { font: inherit; font-size: 0.78rem; padding: 0.45rem 0.7rem; border: 1px solid var(--border); border-radius: 5px; background: var(--card2); color: var(--text); cursor: pointer; text-align: left; }
+  .chip:hover { border-color: var(--cyan); }
+  ol.picked { margin: 0.5rem 0 0.5rem 1.4rem; font-size: 0.82rem; }
+  ol.picked li { padding: 0.25rem 0.3rem; cursor: pointer; border-radius: 3px; }
+  ol.picked li:hover { background: var(--card2); }
+  ol.picked li.right { color: var(--emerald); }
+  ol.picked li.wrong { color: var(--rose); }
+  .flash { min-height: 180px; display: flex; flex-direction: column; justify-content: center; text-align: center; font-size: 1rem; cursor: pointer; }
+  .flash .back { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed var(--border); color: var(--emerald); }
+  .flash .extra { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+  th, td { text-align: left; padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: normal; }
+  td.weak { color: var(--rose); }
+  td.good { color: var(--emerald); }
+  .review-item { padding: 0.6rem 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+  .review-item:last-child { border-bottom: none; }
+  .ok-t { color: var(--emerald); } .bad-t { color: var(--rose); } .warn-t { color: var(--amber); }
+  kbd { font: inherit; font-size: 0.7rem; border: 1px solid var(--border); border-radius: 3px; padding: 0 0.3rem; color: var(--muted); }
+  /* Visible only to screen readers: option-group legends and the announced flashcard answer. */
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  #storage-status { max-width: 900px; margin: 0.75rem auto 0; padding: 0.6rem 0.9rem; border: 1px solid var(--rose); border-radius: 5px; background: rgba(251,113,133,0.12); color: var(--rose); font-size: 0.78rem; }
+  #notices { max-width: 900px; margin: 0 auto; padding: 0.75rem 1rem 0; }
+  #notices:empty { padding: 0; }
+  .notice-list { margin: 0.4rem 0 0 1.1rem; font-size: 0.75rem; color: var(--muted); }
+  fieldset.options { border: 0; padding: 0; margin: 0; }
+  /* Ordered-step chips are buttons inside <li>; they must inherit list colour and fit inline. */
+  button.chip-inline { font: inherit; font-size: 0.82rem; color: inherit; background: none; border: 0; border-radius: 3px; padding: 0.1rem 0.3rem; cursor: pointer; text-align: left; }
+  button.chip-inline:hover { background: var(--card2); color: var(--cyan); }
+  button.chip-inline:disabled { cursor: default; }
+  /* The flashcard body is a button so Enter/Space flip it, like a click. */
+  button.flash { font: inherit; color: inherit; width: 100%; text-align: center; }
+  button.flash:hover { border-color: var(--cyan); }
+  input[type=file] { font: inherit; font-size: 0.75rem; color: var(--muted); }

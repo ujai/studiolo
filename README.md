@@ -21,12 +21,13 @@ Socratic questioner, sparring partner, diagnostician, clerk.
 | Piece | What it does |
 |-------|--------------|
 | `learner-map.md` | Source of truth: topics, levels (0–5), dependencies, spaced review dates, root causes |
-| `whats_due.py` | Prints today's queue: due reviews, next topic, deadline countdown, open root causes |
+| `whats_due.py` | Prints today's queue: due reviews, next topic, priority fix drills, deadline countdown (`--check` validates the map) |
 | `ai-tutor/` | The 10 AI roles, with copy-paste prompts for any AI chat |
-| `practice/` | No-build practice app: timed sprints, pair drills, visual drills, spaced review, flashcard blitz |
+| `practice/` | No-build practice app: timed sprints, pair drills, visual drills, spaced review, flashcard blitz, backup/restore |
 | `labs/practice-library.md` | One hands-on task per topic: do it, break it, fix it |
 | `mistake-log.md` | Every miss with the *why*. Wrong twice → becomes a flashcard |
-| `anki/` + `import_anki.py` | Optional Anki sync (basic and cloze decks, straight from CSV) |
+| `anki/` + `import_anki.py` | Optional Anki sync — or import the CSVs straight into Anki |
+| `generate_topics.py` | Regenerates `practice/topics.js` from the map, so the app and the map can't drift apart |
 
 ![The practice app: a visual drill from the starter set](./docs/screenshot-drill.png)
 
@@ -61,7 +62,10 @@ The rules that make it stick:
 - **Wrong twice = flashcard.** Only repeated misses become cards. No card spam.
 - **The ladder.** Miss a question → it returns after 1, 3, 7, then 14 days. Topics too: pass an
   Examiner review and the next review moves further out; drop a level and it's back tomorrow.
-- **Struggle first.** Ten minutes alone before you may ask for help. The Explainer role answers
+  The practice app runs the same ladder over its own questions: miss anything in any mode and it
+  comes back tomorrow.
+- **Struggle first.** Ten minutes alone before you may ask for help — the window is yours to set
+  at intake, and it only counts while you're actually working. The Explainer role answers
   only the one stuck step, in six lines or fewer, then you redo everything yourself.
 - **Teach it simply.** If you can't explain it simply, you don't know it yet.
 
@@ -81,10 +85,26 @@ different from a sysadmin's cert map. The system is the same.
 ## Requirements
 
 - Any AI chat (free tier is fine), or an AI coding agent for the automated flow
-- Python 3 for `whats_due.py` and `import_anki.py` — no packages needed
-- Anki, optional — only if you like a separate flashcard app
+- Python 3.9+ for `whats_due.py`, `generate_topics.py` and `import_anki.py` — standard library
+  only, nothing to install
+- Anki, optional — import `anki/*.csv` directly (File → Import), or let `import_anki.py` do it
+  (that script needs the `anki` Python package)
 - Nothing else. No server, no accounts, no build step, no API keys. `practice/index.html`
   opens with a double-click.
+
+## Developing
+
+Template changes are welcome — the rules are in [CONTRIBUTING.md](./CONTRIBUTING.md). Before you
+commit, run the checks:
+
+```bash
+python3 -m unittest discover -s tests    # queue, Anki sync, and generated-metadata tests
+python3 whats_due.py --check             # learner-map.md is valid
+python3 generate_topics.py --check       # practice/topics.js matches learner-map.md
+```
+
+Then open `practice/index.html` with a double-click and click through the tabs. The app is plain
+HTML/CSS/JS with no build step, so that file:// check is the real test.
 
 ## FAQ
 
@@ -99,8 +119,14 @@ agent does the writing, you do the learning.
 today* and at what difficulty, makes you produce full answers, finds the root cause behind
 your mistakes, and only then feeds the survivors into cards.
 
-**What about my data?** All local: markdown files and browser storage. Your instance is yours —
-keep the repo private, and never publish your learner map or mistake log.
+**What about my data?** The repo holds markdown files and the app keeps its progress in this
+browser's storage — nothing is uploaded, and there is no telemetry. Two things to know:
+
+- Browser progress lives per browser and per device. Use **Progress & export → Download backup**
+  to move it, and keep the backup private.
+- "Local" covers the repo, not your AI. Whatever you paste into an AI chat goes to that
+  provider. Don't paste anything you wouldn't share with a tutor, and never publish your
+  learner map, mistake log, or tracker.
 
 **A teacher, can I use this for a whole class?** Yes — run the Interviewer and Mapmaker once
 against your syllabus, then hand each student the pre-mapped copy. They (and their agents)
