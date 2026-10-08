@@ -76,4 +76,5 @@ Do **Day 1 — Intake** in `study-plan.md`:
 
 1. run the Interviewer, find-my-level, and Mapmaker prompts → fill in `learner-map.md`
 2. pick the one authoritative source and the one question bank
-3. import the starter deck only if you want Anki in the loop (`python3 import_anki.py`)
+3. import the starter deck only if you want Anki in the loop (Anki → File → Import, or
+   `python3 import_anki.py` for repeated syncs; see `anki/README.md`)

@@ -20,14 +20,19 @@ Socratic questioner, sparring partner, diagnostician, clerk.
 
 | Piece | What it does |
 |-------|--------------|
-| `learner-map.md` | Source of truth: topics, levels (0–5), dependencies, spaced review dates, review history, root causes |
-| `whats_due.py` | Prints today's queue: due reviews (capped at 3 on backlog days), next topic, priority fix drills, deadline countdown, 30-day review pass rate (`--check` validates the map) |
+| `learner-map.md` | Source of truth: intake, topics, levels (0–5), dependencies, spaced review dates, review history, root causes |
+| `whats_due.py` | Prints today's queue: due reviews (capped at 3 on backlog days), next topic, priority fix drills, deadline countdown, 30-day review pass rate, mistake-log counts (`--check` validates the map) |
+| `study-plan.md` | The daily session loop, the weekly ritual, and the final sprint before a test |
 | `ai-tutor/` | The 10 AI roles, with copy-paste prompts for any AI chat |
 | `practice/` | No-build practice app: timed sprints, pair drills, visual drills, spaced review, flashcard blitz, backup/restore |
 | `labs/practice-library.md` | One hands-on task per topic: do it, break it, fix it |
 | `mistake-log.md` | Every miss with the *why*. Wrong twice → becomes a flashcard |
+| `templates.md`, `daily-tracker.md` | Session, mistake-log, and weekly-ritual formats; the tick-box progress tracker |
+| `cheatsheets/` | One blank page per area, filled from your own head |
+| `exam-day.md` | Registration, scope re-checks at 30 and 7 days, test-day logistics, retakes |
 | `anki/` + `import_anki.py` | Optional Anki sync — or import the CSVs straight into Anki |
 | `generate_topics.py` | Regenerates `practice/topics.js` from the map, so the app and the map can't drift apart |
+| `docs/learning-science.md` | The research behind each rule |
 
 ![The practice app: a visual drill from the starter set](./docs/screenshot-drill.png)
 
@@ -45,7 +50,8 @@ Socratic questioner, sparring partner, diagnostician, clerk.
    an aligned map and practice tasks.
    Then the agent builds your learner map, question bank, and practice tasks.
 3. **Every day after**: run `python3 whats_due.py` (or just ask your agent) and do what the
-   queue says. 30–80 minutes.
+   queue says. 30–80 minutes. Until Intake says `Status: done`, the script only reminds you to
+   run the Interviewer.
 
 No agent? Fill in `learner-map.md` yourself and paste the role prompts from
 `ai-tutor/prompts.md` into any AI chat. The map, the daily queue, and the practice app all
@@ -68,8 +74,9 @@ The rules that make it stick:
   Examiner review and the next review moves further out — a level-4 topic stretches to 30 days,
   a level-5 one to 60; drop a level and it's back tomorrow. A backlog is met with amnesty:
   `whats_due.py` caps a pile of overdue reviews at three and sends the rest to tomorrow, not to
-  a guilt list. The practice app runs its own 1/3/7/14 ladder over questions: miss anything in
-  any mode and it comes back tomorrow.
+  a guilt list. The practice app runs its own 1/3/7/14 ladder over questions: miss a question (or
+  get it right but tick "I guessed") in any drill and it comes back tomorrow. Flashcard blitz
+  is the exception: Anki schedules the cards.
 - **Struggle first.** Ten minutes alone before you may ask for help — the window is yours to set
   at intake, and it only counts while you're actually working. The Explainer role answers
   only the one stuck step, in six lines or fewer, then you redo everything yourself.
@@ -95,6 +102,7 @@ different from a sysadmin's cert map. The system is the same.
   only, nothing to install
 - Anki, optional — import `anki/*.csv` directly (File → Import), or let `import_anki.py` do it
   (that script needs the `anki` Python package)
+- A current browser (any recent Chrome, Edge, Firefox, or Safari) for the practice app
 - Nothing else. No server, no accounts, no build step, no API keys. `practice/index.html`
   opens with a double-click.
 
@@ -135,6 +143,9 @@ browser's storage — nothing is uploaded, and there is no telemetry. Two things
 - "Local" covers the repo, not your AI. Whatever you paste into an AI chat goes to that
   provider. Don't paste anything you wouldn't share with a tutor, and never publish your
   learner map, mistake log, or tracker.
+- Want to share your copy publicly? Publish only a copy whose learner files are still blank, or
+  were never committed. Git keeps every old version, so deleting your rows later doesn't remove
+  them from the history. Your commit name and email are public too.
 
 **A teacher, can I use this for a whole class?** Yes — run the Interviewer and Mapmaker once
 against your syllabus, then hand each student the pre-mapped copy. They (and their agents)

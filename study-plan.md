@@ -36,7 +36,7 @@ Exam track     final sprint: practice tests → Diagnostician → targeted fixes
 |-------|------|---------|-----------|
 | 1 (20 min) | **Interviewer** | Run prompt §1. Be specific: deadline, real time budget, what you actually know vs have merely seen. | `learner-map.md` → Intake |
 | 2 (20 min) | **Examiner** ("find my level") | Run the "Find my level" extra prompt once per area, ~5 min each. | Rough Level per topic |
-| 3 (15 min) | **Mapmaker** | Run prompt §2 with your intake + levels. Get the topics, stuck points, and one practice task per topic written. | `learner-map.md` → Next up, `labs/practice-library.md` |
+| 3 (15 min) | **Mapmaker** | Run prompt §2 with your intake + levels. Get the topics, stuck points, and one practice task per topic written. | `learner-map.md` → Map and Next up, `labs/practice-library.md` |
 | 4 (10 min) | Setup | Pick **one** main resource and **one** question bank (`resources.md`). Install Anki only if you want it. | — |
 
 Low levels on Day 1 are good news: the map now knows where to send you.
@@ -58,8 +58,8 @@ Pick the topic using the rules in `learner-map.md` → "Picking today's topic" �
 1. **Spaced review** (10 min): Anki due cards, if you use Anki. Then, for any topic whose
    **Next review** is today or earlier (`python3 whats_due.py` lists them), run a short
    Examiner (prompt §5, stop at the first miss) and update its row. If the practice app's
-   **Spaced review** tab has items due, clear those in the same block — same ladder, different
-   deck.
+   **Spaced review** tab has items due, clear those in the same block — the same first rungs
+   (1, 3, 7, 14 days), applied to single questions instead of whole topics.
 2. **Recall before review** (2 min): write 3 things you remember about today's topic, without looking.
 3. **Cold attempt** (13 min): start the task's **Do it** step cold, before any tutorial. Get stuck. That's the point.
 

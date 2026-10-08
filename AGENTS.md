@@ -213,7 +213,8 @@ trail: `whats_due.py` turns them into the 30-day review pass rate.
   ```
 
   `sources` are HTTP(S) links or paths to files in this repo, and they must back the item's
-  answer key, not just its topic. Use `status: "needs-check"` for anything you haven't
+  answer key, not just its topic. Repo paths are relative, with no leading `./`, and end in
+  `.md`, `.csv`, `.js`, `.json`, `.py`, `.txt` or `.html`; the validator rejects anything else. Use `status: "needs-check"` for anything you haven't
   confirmed; the app then flags that item on screen. Never write `"verified"` for a fact you
   did not check in an authoritative source — that is the one rule this file cares most about.
 - The app validates the bank on load (`practice/core.js`): bad IDs, unknown topics, missing

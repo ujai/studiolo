@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 .DS_Store
+# Practice-app backups hold your answer history; keep them out of a shared repo.
+studiolo-practice-*.json
+studiolo-raw-storage-*.json

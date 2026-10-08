@@ -52,7 +52,7 @@ renderers.review = function () {
 
   panel.replaceChildren(el("div", { class: "card" },
     el("h2", { text: "Spaced review" }),
-    el("p", { class: "muted", text: "Every question you miss in any mode comes back tomorrow, then after 3, 7 and 14 days while you keep getting it right. One miss resets the ladder. Anki schedules the CSV decks; this schedules the app questions." }),
+    el("p", { class: "muted", text: "Every question you miss (or guess) in the other drills comes back tomorrow, then after 3, 7 and 14 days while you keep getting it right. One miss resets the ladder. Anki schedules the CSV decks; this schedules the app questions." }),
     el("div", { class: "big", text: `${due.length} due today` }),
     el("p", { class: "muted", text: upcoming.length ? `${upcoming.length} more scheduled, next on ${upcoming[0][1].due}.` : "Nothing else scheduled. Miss something first — that's what feeds this queue." }),
     el("div", { class: "row" },

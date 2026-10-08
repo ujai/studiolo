@@ -1,6 +1,6 @@
 "use strict";
 
-// Pure helpers shared by the app, content validator, and browser/Node tests.
+// Pure helpers shared by the app and its content validator. No DOM access.
 window.StudioloCore = (() => {
   const object = v => v !== null && typeof v === "object" && !Array.isArray(v);
   const text = v => typeof v === "string";

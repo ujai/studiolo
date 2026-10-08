@@ -64,14 +64,15 @@ to install.
 | Exam sprint (2, 3 or 5 minutes per question, or no timer, "I guessed" flag) | Examiner + Sparring under real test conditions |
 | Pair picker (10 s or 20 s per clue, or no timer) | Rapid retrieval of the pairs your subject confuses |
 | Visual drills (place parts in a diagram, order the steps) | Showing what you know visually, not only in words |
-| Flashcard blitz (loads `anki/*.csv`) | Speed reps on your own cards; Anki still owns their scheduling |
-| Spaced review | Every miss in any mode comes back after 1, 3, 7 and 14 days |
+| Flashcard blitz (pick `anki/*.csv` files to load) | Speed reps on your own cards; Anki still owns their scheduling |
+| Spaced review | Every miss or guess in the other drills comes back after 1, 3, 7 and 14 days |
 | Progress & export | Clerk: misses become mistake-log rows, anything missed twice becomes Anki rows, plus backup/restore |
 
-**Spaced review** is this repo's own addition, not from the video: every miss comes back
-after 1, 3, 7 and 14 days until you've beaten it — the same ladder the map uses for topic
-reviews in `learner-map.md`. Answering a due item right moves it up a rung; missing it sends it
-back to tomorrow. The schedule is rebuilt from your answer history, so a backup carries it.
+**Spaced review** is this repo's own addition, not from the video: every miss (and every
+"I guessed") comes back after 1, 3, 7 and 14 days until you've beaten it. Topic reviews in
+`learner-map.md` start on the same rungs, but only they stretch to 30 and 60 days at levels 4
+and 5. Answering a due item right in Spaced review moves it up a rung; missing it anywhere sends
+it back to tomorrow. Flashcard blitz answers are not scheduled, because Anki owns the cards. The schedule is rebuilt from your answer history, so a backup carries it.
 
 Progress is saved in this browser only. Progress & export has **Download backup** and
 **Restore**, which is how you move it to another browser or machine. The app also checks the
