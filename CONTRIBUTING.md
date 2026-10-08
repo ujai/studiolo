@@ -35,6 +35,10 @@ python3 whats_due.py --check             # learner-map.md parses and validates
 python3 generate_topics.py --check       # practice/topics.js matches learner-map.md
 ```
 
+CI (`.github/workflows/checks.yml`) runs the same three checks on Python 3.9 and 3.13 for
+every pull request, and `main` only accepts changes through a pull request. Run them locally
+first anyway: it's faster than waiting for CI.
+
 Then open `practice/index.html` by double-click and click through every tab: the app must work
 from `file://` with no server and no build step. Two files are generated and must not be hand
 edited: `practice/topics.js` (run `python3 generate_topics.py`) and anything under `__pycache__/`.
