@@ -38,8 +38,12 @@ Socratic questioner, sparring partner, diagnostician, clerk.
 2. **Open the folder in an AI coding agent** (Droid, Claude Code, Cursor, Codex — anything that
    reads `AGENTS.md`) and say: *"Help me study."*
    The **Interviewer** fires first: up to 12 questions about your subject, deadline, level,
-   and how you'll be tested. Then the agent builds your learner map, question bank, and
-   practice tasks. No setup, no forms.
+   and how you'll be tested. For subjects or exams with a defined, changing scope (including
+   school curricula and professional certifications), it checks the latest official requirements
+   that apply to your target date when web lookup is available. If it cannot verify the source,
+   it asks you to provide the syllabus, exam guide, or current course materials before building
+   an aligned map and practice tasks.
+   Then the agent builds your learner map, question bank, and practice tasks.
 3. **Every day after**: run `python3 whats_due.py` (or just ask your agent) and do what the
    queue says. 30–80 minutes.
 
@@ -115,7 +119,9 @@ agent does the writing, you do the learning.
 
 **Where do the practice questions come from?** Your agent generates them into
 `practice/questions.js` after intake, from your actual syllabus, following the schemas in
-`AGENTS.md`. The starter set teaches the learning science the system is built on.
+`AGENTS.md`. Every question is written as an original — never copied from real, NDA'd, or
+copyrighted exam banks — and carries provenance pointing at the source behind it. The starter
+set teaches the learning science the system is built on.
 
 **Is this just Anki?** No. Anki stores facts you already have. Studiolo decides *what to study
 today* and at what difficulty, makes you produce full answers, finds the root cause behind

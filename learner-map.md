@@ -14,15 +14,20 @@ for study.
 
 - Status: not done
 - Subject / goal:
+- Study jurisdiction / grade or qualification / exam code and version / academic year (if applicable):
+- Official requirements source: (authority, title, version/year, applicable/effective date, official URL, checked date)
+- Source status: (not checked / official source verified (applicable version) / learner-provided (currentness unverified) / conflicting sources, awaiting clarification / unable to verify, awaiting learner source / recheck required / not applicable (general study))
 - Deadline: none — set one (a real test date, or a self-imposed target; a map without a date drifts)
 - Time budget: ___ per day, ___ per week
-- How I'm tested: (format, style, pass mark — or "no test, steady learning")
+- How I'm tested: (format, question types, count/duration, pass mark, topic weightings if published — or "no test, steady learning")
+- Exam language / regional variant (the language of the exam papers, if not how we chat):
+- Accessibility / accommodations (extra time, screen reader, large print… note lead time; or "none"):
 - What counts as practice for this subject: (problems? essays? speaking? building?)
 - Strong areas:
 - Weak areas:
 - Biggest risk / how I usually fail:
 
-Interviewer 10-line summary (pasted after the interview):
+Interviewer 12-line summary (pasted after the interview):
 
 ## How to read the map
 

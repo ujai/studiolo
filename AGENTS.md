@@ -34,7 +34,63 @@ plan a study session yet — whatever study request the learner made. Run the **
 (`ai-tutor/prompts.md` §1): one question at a time, max 12, adapt the wording to the learner's
 age, push back on vague answers. Then:
 
-1. Write the 10-line summary into Intake yourself and set `Status: done (YYYY-MM-DD)`.
+For study tied to a defined or periodically updated scope (for example, a school curriculum,
+professional certification, licensing or standardized exam, or versioned technical
+specification), establish the relevant jurisdiction, issuing authority, grade/qualification,
+exam code or version, and target exam date when applicable. Before building an aligned map,
+actively look up the latest official requirements that will apply to the learner's target date,
+using available web search/browsing tools. Prefer the organization that owns the curriculum,
+certification, or exam (for example, official KPM sources for Malaysian school curricula, or
+the certifying body’s official exam guide and exam page for a professional certification).
+Check announced transitions or future effective dates when relevant. Verify the official
+document itself and its applicable version/date; AI memory, search-result snippets, and
+third-party summaries do not count as verification. Record the authority, document title,
+exam code/version or academic year, official URL, applicable/effective date, and date checked
+in Intake. Set the source status to `official source verified (applicable version)`.
+
+When the official source defines the exam format, capture it in Intake under "How I'm tested":
+question types, number of questions, duration, pass mark, and published topic/domain weightings.
+Also record the exam language and regional variant, and any accessibility accommodations the
+learner uses (extra time, screen reader, large print), with their lead time. Shape practice from
+these: weight study time toward the officially weighted areas (a heavily weighted weak area
+jumps the queue), run Sparring drills in the real format and timing, write every question in the
+exam language, and practise under the same accommodation conditions the exam will provide.
+
+If web lookup is unavailable, or a reasonable search cannot verify the current applicable
+source, say what could not be verified and ask the learner to provide the official syllabus,
+exam guide/blueprint, current textbook/course outline, or version-specific official
+documentation. Make this request only after attempting the lookup, and set the status to
+`unable to verify, awaiting learner source`. Do not mark Intake done or create an aligned map,
+practice tasks, or questions until the learner supplies a source. Once they do, label it
+`learner-provided (currentness unverified)` unless you independently verify its currentness.
+You may use the supplied edition as the study baseline, but clearly tell the learner that you
+could not confirm it is the latest. The rest of the interview may continue while waiting. If the
+learner explicitly wants general, non-aligned study, record `not applicable (general study)` and
+proceed without claiming alignment to a current official scope.
+
+If official-looking sources conflict, don't pick one silently. Prefer the document issued by
+the authority that owns the requirement; among that authority's documents, prefer the one that
+matches the learner's exact exam code/version, jurisdiction, and target date — a specific
+syllabus or blueprint beats a general overview page. If precedence is still unclear, record both
+sources in Intake, set the source status to `conflicting sources, awaiting clarification`, tell
+the learner exactly what conflicts, and ask which document applies (their teacher or exam
+provider can settle it). Until it is settled, study only the parts the sources agree on, mark
+them provisional, and do not claim alignment to one version.
+
+Recheck the official source and its status when any of these happens: the learner changes their
+target exam date (including a new retake date), exam code/version, or jurisdiction; the
+authority announces a change; or the learner reaches the 30-day and 7-day exam countdown
+checkpoints in `exam-day.md`. At each checkpoint, compare the source version/effective date
+with the requirements for the target date. Update the checked date and status. If the
+requirements changed, compare them with the learner map, practice tasks, and question bank;
+revise affected material and do not present stale material as aligned to the new scope. If a
+recheck is due but cannot be completed, set the status to `recheck required`, tell the learner
+what remains unverified, and do not create new exam-aligned material until the source is
+verified or the learner provides the relevant official material. A booked retake is a new
+target date: recheck the requirements that will apply on it — the applicable version can change
+between attempts — and re-arm the `exam-day.md` countdown checkpoints.
+
+1. Write the 12-line summary into Intake yourself and set `Status: done (YYYY-MM-DD)`.
 2. Offer the "find my level" quiz per area; write the starting Levels into the Map.
 3. Run the **Mapmaker** (§2): build the topic map with dependencies and stuck points, fill
    **Next up**, and create one practice task per topic in `labs/practice-library.md`.
@@ -146,6 +202,9 @@ trail: `whats_due.py` turns them into the 30-day review pass rate.
   reference ids), a `topic` that exists in the map, and only facts you can stand behind. No
   invented numbers. Prioritize what the Diagnostician flagged and the classic confusions of
   THIS subject. 10–20 items per topic is plenty.
+- Write original items. Never copy real exam questions from NDA-protected, copyrighted, or
+  paywalled banks, never rephrase them one-to-one, and never store such content in this repo —
+  even if the learner pastes it. Test the same objectives with your own scenarios and wording.
 - Every item also needs `provenance`, or the app refuses to load it:
 
   ```js
@@ -153,10 +212,10 @@ trail: `whats_due.py` turns them into the 30-day review pass rate.
                 verified_on: "YYYY-MM-DD", status: "verified" }
   ```
 
-  `sources` are HTTP(S) links or paths to files in this repo. Use `status: "needs-check"` for
-  anything you haven't confirmed; the app then flags that item on screen. Never write
-  `"verified"` for a fact you did not check in an authoritative source — that is the one rule
-  this file cares most about.
+  `sources` are HTTP(S) links or paths to files in this repo, and they must back the item's
+  answer key, not just its topic. Use `status: "needs-check"` for anything you haven't
+  confirmed; the app then flags that item on screen. Never write `"verified"` for a fact you
+  did not check in an authoritative source — that is the one rule this file cares most about.
 - The app validates the bank on load (`practice/core.js`): bad IDs, unknown topics, missing
   provenance, and malformed geometry are listed at the top of the page instead of failing
   silently. Run the app once after editing, and fix what it reports.

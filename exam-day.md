@@ -10,16 +10,17 @@ date; the whole plan assumes a real deadline.
 - [ ] Pick the delivery option (in person, online proctored, in class). In person = fewer things that can go wrong on the day; online = no travel, but strict room and connection checks.
 - [ ] Book the date on or near your target. If it differs from the map's target, update `learner-map.md` → Deadline the same day.
 - [ ] Read the cancellation/reschedule policy while booking.
-- [ ] Check accommodations early if you want any; they need lead time and documentation.
+- [ ] Check accommodations early if you want any; they need lead time and documentation. Record them in `learner-map.md` → Accessibility, and practise with the same setup (extra time, assistive tools) before the day.
 
 ## Scope re-check (final month)
 
-- [ ] A month out: re-read the official syllabus / course outline / exam guide. If anything changed, update `learner-map.md` and tell your AI tutor the new scope.
-- [ ] In the final week: check it again.
+- [ ] At 30 days before the exam: have your AI tutor recheck the official syllabus / course outline / exam guide against the target exam date. Update the source version, applicable/effective date, checked date, and status in `learner-map.md`. If the scope changed, update affected map topics, practice tasks, and questions. If the exam format changed (question types, count, duration, weightings), update "How I'm tested" in the map and match the final practice tests to it. If it cannot verify the current source, provide the latest official material before creating more exam-aligned practice.
+- [ ] At 7 days before the exam: repeat the check, update the same fields, and refresh affected study materials if the scope changed.
+- [ ] Recheck sooner if the exam date, exam code/version, jurisdiction changes, or the authority announces a scope update.
 
 ## Before the test
 
-- Final 6 days: two full practice tests, Diagnostician on every miss.
+- Final 6 days: two full practice tests in the real format (official question types, count, timing), Diagnostician on every miss.
 - Day −2: light review only — your own cheat sheets, due flashcards. No new cards, no new topics.
 - Test morning: 30 minutes of cheat sheets maximum, then stop. No studying in the last 2 hours before the test.
 
@@ -42,4 +43,14 @@ The strategy you drilled in Sparring:
 ## After
 
 - [ ] Result and score into `daily-tracker.md` → After action (weakest/strongest area, root cause that mattered most).
-- [ ] Pass: close the goal in the learner map. Not a pass: the mistake log and root causes ARE the retake plan — re-run the Mapmaker, check the retake policy, book the retake.
+- [ ] Pass: close the goal in the learner map.
+
+## Retake (if not a pass)
+
+The mistake log and root causes ARE the retake plan — nothing new needs inventing.
+
+- [ ] Run the Diagnostician (prompt §8) on the score report (if you got one) plus the mistake log, and write the root causes into the map; the fix drills jump the queue. Re-run the Mapmaker (prompt §2) around them.
+- [ ] Check the official retake policy: waiting period, attempt limits, fees. Don't rely on third-party summaries.
+- [ ] Book the retake and put the new date in `learner-map.md` → Deadline the same day — that re-arms the 30-day and 7-day scope re-checks.
+- [ ] Have your tutor recheck the official requirements for the new date: the applicable exam version can change between attempts (exams retire, versions transition). Update the source status, and refresh anything stale if the version changed.
+- [ ] Keep your levels — they're real knowledge. Keep due reviews running so hard-won topics don't decay while you wait for the retake.
