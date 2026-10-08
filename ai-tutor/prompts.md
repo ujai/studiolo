@@ -1,0 +1,214 @@
+# AI Tutor Prompts
+
+Copy-paste prompts for any AI chat (ChatGPT, Claude, Gemini — or an agent like Droid, Cursor,
+or Codex working inside this repo). Replace `{...}` placeholders.
+
+**Start every new chat with the context block.** Most AI tools don't remember past chats, so
+`learner-map.md` serves as the memory.
+
+---
+
+## 0. Context block (paste first, every session)
+
+```text
+I'm studying {subject} using Studiolo, a markdown study system.
+Goal: {from my Intake}. Deadline: {date, or "none — steady learning"}.
+How I'm tested: {format, question style, pass mark — from my Intake}.
+About me: {strong areas, weak areas, hours available, how I usually fail — from my Intake}.
+Keep every reply short: max ~8 lines unless I ask for more. One question at a time.
+Never invent numbers, dates, or facts. If unsure, say "verify in an authoritative source".
+Reply in {the language I'll be tested in}.
+
+Here is my current learner map:
+{paste the Intake, Map table and Root causes from learner-map.md}
+
+Today's topic: {topic ID + name}
+Role for this chat: {role name from the prompts below}
+
+Interview gate: if my Intake section is empty or says "not done", ignore the role above.
+Run the Interviewer (questions one at a time, max 12) first, then give me the
+10-line Intake summary to paste into learner-map.md. Only then switch to the role.
+```
+
+The gate matters because the order is **interview first, then map, then everything else**.
+Without your goal, level, and test format, every other role guesses.
+
+---
+
+## 1. Interviewer (Day 1, or when lost)
+
+```text
+Before you teach me anything, interview me to figure out what I actually need to reach my goal.
+Ask one question at a time about: what I'm studying and why, my deadline, the hours I can
+really give it, what I actually know versus what I've merely seen, how I'll be tested
+(format, question style, pass mark), and what usually makes me fail tests. Push back if my
+answers are vague. When you're done (max 12 questions), give me a 10-line summary: goal,
+deadline, time budget, how I'm tested, what counts as practice for this subject, strong
+areas, weak areas, biggest risk.
+```
+
+Paste the summary into `learner-map.md` → **Intake**.
+
+## 2. Mapmaker (Day 1, then weekly)
+
+```text
+Using my intake summary, break my subject into study topics. For each topic tell me:
+(1) what it depends on, (2) where learners usually get stuck, (3) whether my level suggests
+studying it sooner or later. Order areas the way a course, textbook, or syllabus does.
+Then give me the next 6 study sessions in order — lowest level and unblocked dependencies
+first, never a topic whose dependencies are below level 3. Only include topics my goal
+actually needs.
+```
+
+Update `learner-map.md` → **Map** and **Next up**.
+
+## 3. Explainer (only when stuck)
+
+```text
+I'm doing the practice task for {topic}. I tried {what I did}. I got stuck at
+{exact step / error / point of confusion}.
+Explain ONLY that part, at my level, in max 6 lines. Use one analogy.
+Don't give me the remaining steps. I'll redo the whole task from scratch myself after this.
+```
+
+After this, **restart the task from step 1 without help.**
+
+## 4. Socratic questioner (after the task)
+
+```text
+I just studied {topic}. I think I understand it.
+Don't explain anything and don't give me answers. Ask me "why" and "what if" questions,
+one at a time, until I hit something I can't answer. Then ask one smaller follow-up question
+to help me find the gap myself. After I find it, give a 2-line correction and move on.
+Stop after 10 minutes of questions, or when we've found 3 gaps. List the gaps at the end.
+```
+
+Example follow-ups it should ask: *"What if one condition of the problem changes?"* *"What
+if the usual method doesn't apply here?"* *"When would this be the wrong tool?"*
+
+## 5. Examiner (end of every topic session, sets your level)
+
+```text
+Quiz me on {topic}. One question at a time.
+Start at level 1 and go up one level each time I'm right:
+L1 = recognize or name it, L2 = explain it in my own words, L3 = apply it in a simple
+problem, L4 = a realistic scenario with multiple constraints, L5 = troubleshoot a novel
+problem, or explain why each tempting wrong answer is wrong.
+Two questions per level. If I miss both at a level, stop.
+If I'm right but my reasoning is shaky, count it as a miss and say why.
+At the end, tell me my level (0–5) and the exact concept that stopped me.
+```
+
+Write the level, today's date, and the next review date into `learner-map.md`.
+
+## 6. Checker (when you built or wrote something)
+
+```text
+Here is my {solution / essay / lab build / cheat sheet / practice piece}:
+{paste or attach}
+Check my process, not just the result. Find what's wrong, missing, or risky, and tell me
+if there's a shorter or safer way. Don't rewrite it. Number your findings, max 6.
+```
+
+Fix it yourself, then redo the part that was wrong.
+
+## 7. Listener (teach-back, after the task)
+
+Do three formats, in this order:
+1. **Voice**: 2-minute voice note, explaining to an imaginary younger student. Transcribe it (phone or voice-to-text).
+2. **Sketch**: a quick diagram (photo, or ASCII boxes and arrows).
+3. **Written**: 5 lines max.
+
+```text
+I'm going to explain {topic} in my own words in three formats: voice transcript, sketch,
+short written version. Grade all three against the source below. Tell me exactly what I
+missed, what I got wrong, and where the three versions contradict each other. Don't
+re-explain the whole topic.
+Source: {paste the relevant section of your authoritative source, or the task steps from labs/practice-library.md}
+
+Voice transcript: {paste}
+Sketch: {attach image or paste ASCII}
+Written: {paste}
+```
+
+Log every missed point in the mistake log.
+
+## 8. Diagnostician (weekly, and after every test)
+
+```text
+Here are my mistakes from the last {7 days / this practice test}:
+{paste rows from the mistake log}
+Don't explain each one. Find the recurring misunderstanding behind them.
+What shared root concept do I keep getting wrong? Give max 3 root causes, each with:
+the evidence (which mistakes), the misunderstanding in one sentence, and one task or
+drill that would fix it.
+```
+
+Write the root causes into `learner-map.md` → **Root causes**, and schedule the fix drills.
+
+## 9. Sparring partner (timed drills and simulations)
+
+**Exam sparring:** builds speed. Pace = test length ÷ question count, from your Intake.
+
+```text
+Act as my real test. Give me one question at a time on {area / weak topics}, in the style
+and format I'll actually face. I have {minutes} per question and I'll answer with the
+letter + one-sentence reason. If my reason is vague, push back hard even if the letter is
+right. Don't go easy on me. After {N} questions, score me and list which reasons were weak.
+```
+
+**Pressure simulation:** trains the real skill behind the subject.
+
+```text
+Play me a pressure simulation on {topic}:
+- hands-on subject: give me only a symptom ("it's broken"), I'll ask for facts one at a
+  time and you reveal only what I asked for; I have 10 minutes to the root cause and fix
+- skill subject: hand me a worked solution with planted errors; I hunt them against the clock
+- concept subject: hand me a source passage with planted errors; I find and justify each
+Score me on: order of checks, wasted steps, and whether my fix is the simplest correct one.
+```
+
+## 10. Clerk (end of session)
+
+```text
+Turn my messy notes below into a clean outline for a one-page {area} cheat sheet.
+Don't add anything I didn't write. Only reorder, group, and shorten.
+Mark anything that looks factually wrong with [CHECK] instead of fixing it.
+{paste notes}
+```
+
+Anki rows (only for things you got wrong **twice**):
+
+```text
+Turn these mistakes into flashcard rows in this CSV format: Front,Back,Tags
+Tags: "{subject} {area} mistake". Quote fields that contain commas.
+One fact per card. Back max 1 sentence. Don't add anything that's not in my mistakes.
+{paste mistake rows}
+```
+
+---
+
+## Extras
+
+**Find my level** (zone of proximal development):
+
+```text
+Quiz me on {area}, easy to hard. Stop as soon as I start guessing. Then tell me my level
+and which topic is just outside my reach. That's what I study next.
+```
+
+**Explain at three levels** (vocabulary check):
+
+```text
+Explain {concept} at three levels: to a 10-year-old, to a beginner, to an expert.
+Max 3 lines each. Then ask me which level I can repeat back without looking.
+```
+
+**Find the best human explanation:**
+
+```text
+I understand {A} but not {B}. My level for this topic is {level}.
+Find me the 3 best existing explanations (a textbook section, a well-known course, good
+teacher's notes, or a reputable site). Say why each one fits my level, and give links.
+Only give links you're sure exist.
+```

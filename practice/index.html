@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studiolo Practice App</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --card2: #273449; --border: #334155;
+    --text: #e2e8f0; --muted: #94a3b8;
+    --cyan: #22d3ee; --emerald: #34d399; --violet: #a78bfa;
+    --amber: #fbbf24; --rose: #fb7185;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'JetBrains Mono', ui-monospace, monospace; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.5; }
+  header { text-align: center; padding: 1.25rem 1rem 0.75rem; border-bottom: 1px solid var(--border); }
+  header h1 { font-size: 1.05rem; color: var(--cyan); }
+  header p { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.6rem; justify-content: center; position: sticky; top: 0; background: var(--bg); z-index: 10; border-bottom: 1px solid var(--border); }
+  .tab { padding: 0.4rem 0.8rem; font: inherit; font-size: 0.75rem; border: 1px solid var(--border); border-radius: 4px; background: transparent; color: var(--muted); cursor: pointer; }
+  .tab:hover { border-color: var(--cyan); color: var(--cyan); }
+  .tab.active { background: rgba(34,211,238,0.15); border-color: var(--cyan); color: var(--cyan); }
+  main { max-width: 900px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1rem 1.1rem; margin-bottom: 1rem; }
+  h2 { font-size: 0.95rem; margin-bottom: 0.6rem; color: var(--cyan); }
+  h3 { font-size: 0.85rem; margin: 0.8rem 0 0.4rem; }
+  .muted { color: var(--muted); font-size: 0.78rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: center; margin: 0.4rem 0; }
+  label.inline { display: flex; gap: 0.35rem; align-items: center; font-size: 0.8rem; color: var(--muted); }
+  select, input[type=text], textarea { font: inherit; font-size: 0.8rem; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.45rem; }
+  textarea { width: 100%; min-height: 160px; }
+  button.btn { font: inherit; font-size: 0.8rem; padding: 0.45rem 0.9rem; border-radius: 4px; border: 1px solid var(--cyan); background: rgba(34,211,238,0.12); color: var(--cyan); cursor: pointer; }
+  button.btn:hover { background: rgba(34,211,238,0.25); }
+  button.btn.ghost { border-color: var(--border); background: transparent; color: var(--muted); }
+  button.btn.danger { border-color: var(--rose); color: var(--rose); background: transparent; }
+  button.btn:disabled { opacity: 0.4; cursor: default; }
+  .badge { display: inline-block; font-size: 0.68rem; padding: 0.1rem 0.45rem; border-radius: 3px; border: 1px solid var(--border); color: var(--muted); }
+  .badge.d1 { color: var(--cyan); border-color: var(--cyan); }
+  .badge.d2 { color: var(--emerald); border-color: var(--emerald); }
+  .badge.d3 { color: var(--violet); border-color: var(--violet); }
+  .badge.d4 { color: var(--rose); border-color: var(--rose); }
+  .badge.d5 { color: var(--amber); border-color: var(--amber); }
+  .qtop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; gap: 0.5rem; }
+  .timer { font-size: 0.9rem; color: var(--amber); font-variant-numeric: tabular-nums; }
+  .timer.low { color: var(--rose); }
+  .qtext { font-size: 0.92rem; margin-bottom: 0.8rem; }
+  .opt { display: flex; gap: 0.6rem; align-items: flex-start; padding: 0.55rem 0.7rem; margin: 0.35rem 0; border: 1px solid var(--border); border-radius: 5px; cursor: pointer; background: var(--card2); }
+  .opt:hover { border-color: var(--cyan); }
+  .opt input { margin-top: 0.25rem; }
+  .opt .key { color: var(--muted); font-size: 0.75rem; min-width: 1.2rem; }
+  .opt.right { border-color: var(--emerald); background: rgba(52,211,153,0.12); }
+  .opt.wrong { border-color: var(--rose); background: rgba(251,113,133,0.12); }
+  .feedback { margin-top: 0.8rem; padding: 0.7rem 0.8rem; border-radius: 5px; font-size: 0.82rem; border-left: 3px solid var(--border); background: var(--card2); }
+  .feedback.ok { border-left-color: var(--emerald); }
+  .feedback.bad { border-left-color: var(--rose); }
+  .big { font-size: 1.6rem; color: var(--cyan); }
+  .pairbtns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1rem; }
+  .pairbtn { font: inherit; font-size: 0.95rem; padding: 1.2rem 0.8rem; border-radius: 6px; border: 1px solid var(--border); background: var(--card2); color: var(--text); cursor: pointer; }
+  .pairbtn:hover { border-color: var(--cyan); }
+  .pairbtn.right { border-color: var(--emerald); background: rgba(52,211,153,0.15); }
+  .pairbtn.wrong { border-color: var(--rose); background: rgba(251,113,133,0.15); }
+  .clue { font-size: 1.05rem; text-align: center; padding: 1rem 0.5rem 0.2rem; }
+  .bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-top: 0.5rem; }
+  .bar > div { height: 100%; background: var(--amber); transition: width 0.1s linear; }
+  .diagram { position: relative; width: 100%; aspect-ratio: 800 / 480; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; margin: 0.6rem 0; }
+  .diagram svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .slot { position: absolute; width: 21.5%; display: flex; flex-direction: column; gap: 2px; }
+  .slot .cap { font-size: 0.62rem; color: var(--muted); line-height: 1.15; }
+  .slot select { font-size: 0.66rem; padding: 0.2rem; width: 100%; }
+  .slot select.right { border-color: var(--emerald); color: var(--emerald); }
+  .slot select.wrong { border-color: var(--rose); color: var(--rose); }
+  .slot .fix { font-size: 0.6rem; color: var(--emerald); }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0; }
+  .chip { font: inherit; font-size: 0.78rem; padding: 0.45rem 0.7rem; border: 1px solid var(--border); border-radius: 5px; background: var(--card2); color: var(--text); cursor: pointer; text-align: left; }
+  .chip:hover { border-color: var(--cyan); }
+  ol.picked { margin: 0.5rem 0 0.5rem 1.4rem; font-size: 0.82rem; }
+  ol.picked li { padding: 0.25rem 0.3rem; cursor: pointer; border-radius: 3px; }
+  ol.picked li:hover { background: var(--card2); }
+  ol.picked li.right { color: var(--emerald); }
+  ol.picked li.wrong { color: var(--rose); }
+  .flash { min-height: 180px; display: flex; flex-direction: column; justify-content: center; text-align: center; font-size: 1rem; cursor: pointer; }
+  .flash .back { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px dashed var(--border); color: var(--emerald); }
+  .flash .extra { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
+  .blank { color: var(--amber); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.76rem; }
+  th, td { text-align: left; padding: 0.35rem 0.4rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: normal; }
+  td.weak { color: var(--rose); }
+  td.good { color: var(--emerald); }
+  .review-item { padding: 0.6rem 0; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+  .review-item:last-child { border-bottom: none; }
+  .ok-t { color: var(--emerald); } .bad-t { color: var(--rose); } .warn-t { color: var(--amber); }
+  kbd { font: inherit; font-size: 0.7rem; border: 1px solid var(--border); border-radius: 3px; padding: 0 0.3rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Studiolo Practice App</h1>
+  <p>Produce, don't consume. Every miss goes to the mistake log, and anything wrong twice becomes an Anki card.</p>
+</header>
+<nav class="tabs" id="tabs">
+  <button class="tab active" data-panel="sprint">Exam sprint</button>
+  <button class="tab" data-panel="review">Spaced review</button>
+  <button class="tab" data-panel="picker">Pair picker</button>
+  <button class="tab" data-panel="visual">Visual drills</button>
+  <button class="tab" data-panel="flash">Flashcard blitz</button>
+  <button class="tab" data-panel="progress">Progress &amp; export</button>
+</nav>
+<main>
+  <section class="panel active" id="panel-sprint"></section>
+  <section class="panel" id="panel-review"></section>
+  <section class="panel" id="panel-picker"></section>
+  <section class="panel" id="panel-visual"></section>
+  <section class="panel" id="panel-flash"></section>
+  <section class="panel" id="panel-progress"></section>
+</main>
+
+<script src="questions.js"></script>
+<script>
+"use strict";
+
+const DATA = window.PRACTICE_DATA;
+const STORE_KEY = "studiolo-practice-v1";
+const SECONDS_PER_QUESTION = 120;
+const PICKER_SECONDS = 10;
+const WEAK_THRESHOLD = 0.7;
+
+// Mirrors the Map table in learner-map.md. Keep in sync when topics are added there.
+const TOPICS = {
+  "1.1": "How memory works", "1.2": "How to practice"
+};
+const DOMAINS = { "1": "The science of learning" };
+const DOMAIN_TAGS = { "1": "studyskills" };
+
+// ---------- storage ----------
+function loadStore() {
+  try {
+    const s = JSON.parse(localStorage.getItem(STORE_KEY));
+    if (s && Array.isArray(s.attempts)) return { attempts: s.attempts, flashcards: s.flashcards || [], review: s.review && typeof s.review === "object" ? s.review : {} };
+  } catch (e) { /* corrupted store falls through to a fresh one */ }
+  return { attempts: [], flashcards: [], review: {} };
+}
+let store = loadStore();
+function saveStore() { localStorage.setItem(STORE_KEY, JSON.stringify(store)); }
+
+function record(a) {
+  store.attempts.push(Object.assign({ at: new Date().toISOString(), exported: false }, a));
+  // Any miss enters the spaced-review ladder: due tomorrow, then after 3, 7 and 14 days.
+  // Flashcard blitz misses are Anki's job (the blitz is itself spaced repetition over the CSVs).
+  if (!a.correct && a.mode !== "Flashcard blitz") seedReview(a.item);
+  saveStore();
+}
+function missCount(itemId) { return store.attempts.filter(a => a.item === itemId && !a.correct).length; }
+
+// ---------- helpers ----------
+function el(tag, attrs, ...children) {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === "class") n.className = v;
+    else if (k === "text") n.textContent = v;
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+    else if (v !== false && v != null) n.setAttribute(k, v === true ? "" : v);
+  }
+  for (const c of children.flat()) if (c != null) n.append(c instanceof Node ? c : document.createTextNode(String(c)));
+  return n;
+}
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+function badge(topic) {
+  if (!topic) return el("span", { class: "badge", text: "flashcard" });
+  return el("span", { class: "badge d" + topic[0], title: TOPICS[topic] || "", text: topic + " " + (TOPICS[topic] || "") });
+}
+function fmtTime(s) { return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+function today() { return new Date().toISOString().slice(0, 10); }
+function topicStats() {
+  const stats = {};
+  for (const a of store.attempts) {
+    if (!a.topic) continue;
+    const s = stats[a.topic] || (stats[a.topic] = { n: 0, ok: 0, last: "" });
+    s.n++; if (a.correct) s.ok++; if (a.at > s.last) s.last = a.at;
+  }
+  return stats;
+}
+function weakTopics() {
+  const st = topicStats();
+  return Object.keys(st).filter(t => st[t].ok / st[t].n < WEAK_THRESHOLD);
+}
+function scopeOptions(includeWeak) {
+  const opts = [el("option", { value: "all", text: "All topics" })];
+  if (includeWeak) opts.push(el("option", { value: "weak", text: "My weak topics (< 70%)" }));
+  for (const [d, name] of Object.entries(DOMAINS)) opts.push(el("option", { value: "d" + d, text: name }));
+  for (const t of Object.keys(TOPICS)) opts.push(el("option", { value: "t" + t, text: t + " " + TOPICS[t] }));
+  return opts;
+}
+function inScope(topic, scope, weak) {
+  if (scope === "all") return true;
+  if (scope === "weak") return weak.includes(topic);
+  if (scope[0] === "d") return topic[0] === scope.slice(1);
+  return topic === scope.slice(1);
+}
+
+// Single active timer and key handler, so switching tabs never leaves one running.
+let activeTimer = null;
+function stopTimer() { if (activeTimer) { clearInterval(activeTimer); activeTimer = null; } }
+// Bumped on every tab switch so delayed callbacks from an abandoned drill don't restart it in the background.
+let runGeneration = 0;
+let keyHandler = null;
+document.addEventListener("keydown", e => {
+  if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName) && e.target.type !== "checkbox" && e.target.type !== "radio") return;
+  if (keyHandler) keyHandler(e);
+});
+
+// ---------- tabs ----------
+const renderers = {};
+document.getElementById("tabs").addEventListener("click", e => {
+  const b = e.target.closest(".tab"); if (!b) return;
+  stopTimer(); keyHandler = null; runGeneration++;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === b));
+  document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "panel-" + b.dataset.panel));
+  renderers[b.dataset.panel]();
+});
+
+// ================= EXAM SPRINT =================
+renderers.sprint = function () {
+  const panel = document.getElementById("panel-sprint");
+  panel.replaceChildren();
+  const count = el("select", {}, [10, 20, 30, 50].map(n => el("option", { value: n, text: n + " questions" })));
+  const scope = el("select", {}, scopeOptions(true));
+  const mode = el("select", {}, el("option", { value: "instant", text: "Feedback after each question" }), el("option", { value: "exam", text: "Exam mode: feedback at the end" }));
+  const timed = el("input", { type: "checkbox", checked: true });
+  const msg = el("p", { class: "muted" });
+  panel.append(el("div", { class: "card" },
+    el("h2", { text: "Exam sprint" }),
+    el("p", { class: "muted", text: "Scenario questions at about 2 minutes each — test pace. Tick \"I guessed\" when you're not sure. Guessed-right answers get exported too, because they're gaps you got lucky on." }),
+    el("div", { class: "row" }, count, scope, mode, el("label", { class: "inline" }, timed, "2:00 timer")),
+    el("div", { class: "row" }, el("button", { class: "btn", text: "Start", onclick: () => {
+      const weak = weakTopics();
+      if (scope.value === "weak" && !weak.length) { msg.textContent = "No weak topics yet. Practice first, or pick another scope."; return; }
+      const pool = DATA.scenarios.filter(q => inScope(q.topic, scope.value, weak));
+      if (!pool.length) { msg.textContent = "No questions in that scope yet."; return; }
+      runSprint(shuffle(pool).slice(0, +count.value), mode.value, timed.checked);
+    } })),
+    msg));
+};
+
+function prepareQuestion(q) {
+  // Shuffle options so you learn the content, not the position.
+  const order = shuffle(q.options.map((_, i) => i));
+  return { q, options: order.map(i => q.options[i]), answer: order.map((orig, i) => q.answer.includes(orig) ? i : -1).filter(i => i >= 0) };
+}
+
+function runSprint(questions, mode, timed) {
+  const panel = document.getElementById("panel-sprint");
+  const items = questions.map(prepareQuestion);
+  const results = [];
+  let idx = 0;
+
+  function show() {
+    stopTimer();
+    if (idx >= items.length) return finish();
+    const it = items[idx];
+    const multi = it.answer.length > 1;
+    let left = SECONDS_PER_QUESTION, submitted = false;
+    const timerEl = el("span", { class: "timer", text: timed ? fmtTime(left) : "" });
+    const guessed = el("input", { type: "checkbox" });
+    const inputs = [];
+    const opts = it.options.map((o, i) => {
+      const inp = el("input", { type: multi ? "checkbox" : "radio", name: "opt" });
+      inputs.push(inp);
+      return el("label", { class: "opt" }, inp, el("span", { class: "key", text: "ABCD"[i] }), el("span", { text: o }));
+    });
+    const fb = el("div");
+    const submitBtn = el("button", { class: "btn", text: "Submit", onclick: () => submit(false) });
+    panel.replaceChildren(el("div", { class: "card" },
+      el("div", { class: "qtop" }, el("span", { class: "muted", text: `Question ${idx + 1} / ${items.length}` }), badge(it.q.topic), timerEl),
+      el("div", { class: "qtext", text: it.q.q }),
+      multi ? el("p", { class: "warn-t", text: "Choose 2." }) : null,
+      opts,
+      el("div", { class: "row" }, el("label", { class: "inline" }, guessed, "I guessed"), submitBtn,
+        el("span", { class: "muted" }, el("kbd", { text: "A-D" }), " select  ", el("kbd", { text: "G" }), " guessed  ", el("kbd", { text: "Enter" }), " submit")),
+      fb));
+
+    function submit(timedOut) {
+      if (submitted) return;
+      const chosen = inputs.map((inp, i) => inp.checked ? i : -1).filter(i => i >= 0);
+      if (!timedOut && !chosen.length) { fb.replaceChildren(el("p", { class: "warn-t", text: "Pick an answer first." })); return; }
+      submitted = true; stopTimer();
+      const correct = chosen.length === it.answer.length && chosen.every(i => it.answer.includes(i));
+      const res = { it, chosen, correct, guessed: guessed.checked, timedOut };
+      results.push(res);
+      record({ mode: "Exam sprint", item: it.q.id, topic: it.q.topic, prompt: it.q.q,
+        chosenText: timedOut && !chosen.length ? "(time ran out)" : chosen.map(i => it.options[i]).join(" + "),
+        correctText: it.answer.map(i => it.options[i]).join(" + "), correct, guessed: guessed.checked });
+      if (mode === "instant") {
+        opts.forEach((o, i) => { if (it.answer.includes(i)) o.classList.add("right"); else if (chosen.includes(i)) o.classList.add("wrong"); });
+        inputs.forEach(inp => inp.disabled = true);
+        submitBtn.disabled = true;
+        const head = timedOut ? "Time's up." : correct ? (guessed.checked ? "Correct, but you guessed. It's logged for review." : "Correct.") : "Wrong.";
+        fb.replaceChildren(el("div", { class: "feedback " + (correct ? "ok" : "bad") }, el("strong", { text: head + " " }), it.q.explain),
+          el("div", { class: "row" }, el("button", { class: "btn", text: idx + 1 < items.length ? "Next (Enter)" : "See results (Enter)", onclick: next })));
+      } else next();
+    }
+    function next() { idx++; show(); }
+
+    keyHandler = e => {
+      const k = e.key.toLowerCase();
+      if (!submitted && "abcd".includes(k) && k.length === 1) {
+        const i = "abcd".indexOf(k); if (!inputs[i]) return;
+        inputs[i].checked = multi ? !inputs[i].checked : true; e.preventDefault();
+      } else if (!submitted && k === "g") { guessed.checked = !guessed.checked; }
+      else if (k === "enter") { e.preventDefault(); submitted ? next() : submit(false); }
+    };
+    if (timed) {
+      activeTimer = setInterval(() => {
+        left--; timerEl.textContent = fmtTime(Math.max(left, 0));
+        timerEl.classList.toggle("low", left <= 20);
+        if (left <= 0) submit(true);
+      }, 1000);
+    }
+  }
+
+  function finish() {
+    keyHandler = null;
+    const ok = results.filter(r => r.correct).length;
+    const lucky = results.filter(r => r.correct && r.guessed).length;
+    const byTopic = {};
+    for (const r of results) { const t = r.it.q.topic; (byTopic[t] = byTopic[t] || { n: 0, ok: 0 }); byTopic[t].n++; if (r.correct) byTopic[t].ok++; }
+    panel.replaceChildren(
+      el("div", { class: "card" },
+        el("h2", { text: "Results" }),
+        el("div", { class: "big", text: `${ok} / ${results.length}  (${Math.round(ok / results.length * 100)}%)` }),
+        el("p", { class: "muted", text: `${lucky} correct-but-guessed. Misses and guesses are in Progress & export, ready for the mistake log, and misses come back in Spaced review.` }),
+        el("table", {}, el("tr", {}, el("th", { text: "Topic" }), el("th", { text: "Score" })),
+          Object.entries(byTopic).sort().map(([t, s]) => el("tr", {}, el("td", {}, badge(t)), el("td", { class: s.ok / s.n < WEAK_THRESHOLD ? "weak" : "good", text: `${s.ok}/${s.n}` })))),
+        el("div", { class: "row" }, el("button", { class: "btn", text: "New sprint", onclick: renderers.sprint }))),
+      el("div", { class: "card" }, el("h2", { text: "Review" }),
+        results.map((r, i) => el("div", { class: "review-item" },
+          el("div", {}, el("span", { class: r.correct ? (r.guessed ? "warn-t" : "ok-t") : "bad-t", text: r.correct ? (r.guessed ? "GUESSED " : "RIGHT ") : "WRONG " }), `Q${i + 1}. `, r.it.q.q),
+          el("div", { class: "muted", text: "You: " + (r.chosen.length ? r.chosen.map(c => r.it.options[c]).join(" + ") : "(no answer)") }),
+          el("div", { class: "ok-t", text: "Correct: " + r.it.answer.map(c => r.it.options[c]).join(" + ") }),
+          el("div", { class: "muted", text: r.it.q.explain })))));
+  }
+  show();
+}
+
+// ================= PAIR PICKER =================
+renderers.picker = function () {
+  const panel = document.getElementById("panel-picker");
+  const scope = el("select", {}, scopeOptions(true));
+  const msg = el("p", { class: "muted" });
+  panel.replaceChildren(el("div", { class: "card" },
+    el("h2", { text: "Pair picker" }),
+    el("p", { class: "muted", text: `Fast drills on the pairs your subject loves to confuse. ${PICKER_SECONDS} seconds per clue. Use ← / → (or 1 / 2) to answer. When you miss, read the reason before moving on.` }),
+    el("div", { class: "row" }, scope, el("button", { class: "btn", text: "Start 15-clue round", onclick: () => {
+      const weak = weakTopics();
+      const pool = DATA.pairs.filter(p => inScope(p.topic, scope.value, weak));
+      if (!pool.length) { msg.textContent = scope.value === "weak" ? "No weak topics yet." : "No pairs in that scope yet."; return; }
+      runPicker(shuffle(pool).slice(0, 15));
+    } })), msg));
+};
+
+function runPicker(items) {
+  const panel = document.getElementById("panel-picker");
+  const gen = runGeneration;
+  let idx = 0, ok = 0;
+  function show() {
+    stopTimer();
+    if (gen !== runGeneration) return;
+    if (idx >= items.length) {
+      keyHandler = null;
+      panel.replaceChildren(el("div", { class: "card" }, el("h2", { text: "Round done" }),
+        el("div", { class: "big", text: `${ok} / ${items.length}` }),
+        el("p", { class: "muted", text: "Misses are saved in Progress & export and come back in Spaced review." }),
+        el("div", { class: "row" }, el("button", { class: "btn", text: "Again", onclick: renderers.picker }))));
+      return;
+    }
+    const p = items[idx];
+    const flip = Math.random() < 0.5;
+    const sides = flip ? ["b", "a"] : ["a", "b"];
+    let done = false, left = PICKER_SECONDS * 10;
+    const fill = el("div", { style: "width:100%" });
+    const fb = el("div");
+    const btns = sides.map((s, i) => el("button", { class: "pairbtn", onclick: () => answer(s) }, (i === 0 ? "← " : "") + p[s] + (i === 1 ? " →" : "")));
+    panel.replaceChildren(el("div", { class: "card" },
+      el("div", { class: "qtop" }, el("span", { class: "muted", text: `${idx + 1} / ${items.length}` }), badge(p.topic)),
+      el("div", { class: "clue", text: p.clue }),
+      el("div", { class: "bar" }, fill),
+      el("div", { class: "pairbtns" }, btns), fb));
+
+    function answer(side) {
+      if (done) return; done = true; stopTimer();
+      const correct = side === p.answer;
+      if (correct) ok++;
+      btns.forEach((b, i) => { if (sides[i] === p.answer) b.classList.add("right"); else if (sides[i] === side) b.classList.add("wrong"); });
+      record({ mode: "Pair picker", item: p.id, topic: p.topic, prompt: `${p.clue} (${p.a} vs ${p.b})`,
+        chosenText: side ? p[side] : "(time ran out)", correctText: p[p.answer], correct, guessed: false });
+      if (correct) { fb.replaceChildren(el("div", { class: "feedback ok", text: p.why })); setTimeout(() => { idx++; show(); }, 900); }
+      else fb.replaceChildren(el("div", { class: "feedback bad" }, el("strong", { text: side ? "Wrong. " : "Too slow. " }), p.why),
+        el("div", { class: "row" }, el("button", { class: "btn", text: "Next (Enter)", onclick: () => { idx++; show(); } })));
+    }
+    keyHandler = e => {
+      if (!done && (e.key === "ArrowLeft" || e.key === "1")) answer(sides[0]);
+      else if (!done && (e.key === "ArrowRight" || e.key === "2")) answer(sides[1]);
+      else if (done && e.key === "Enter") { idx++; show(); }
+    };
+    activeTimer = setInterval(() => {
+      left--; fill.style.width = (left / (PICKER_SECONDS * 10) * 100) + "%";
+      if (left <= 0) answer(null);
+    }, 100);
+  }
+  show();
+}
+
+// ================= SPACED REVIEW =================
+// Missed app questions resurface after 1, 3, 7, then 14 days — the same ladder as "Next review"
+// in learner-map.md. One wrong answer resets an item to tomorrow. Anki schedules the CSV decks;
+// this schedules the app questions.
+const REVIEW_STEPS = [1, 3, 7, 14];
+function addDays(iso, n) {
+  const d = new Date(iso + "T00:00:00Z");
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+function seedReview(itemId) { store.review[itemId] = { stage: 0, due: addDays(today(), 1) }; }
+function reviewItem(id) {
+  for (const q of DATA.scenarios) if (q.id === id) return { kind: "scenario", d: q };
+  for (const p of DATA.pairs) if (p.id === id) return { kind: "pair", d: p };
+  for (const o of DATA.orders) if (o.id === id) return { kind: "order", d: o };
+  const [dId, slot] = id.split("#");
+  const d = DATA.diagrams.find(x => x.id === dId);
+  if (d && slot) { const i = +slot - 1; if (d.slots[i]) return { kind: "slot", d, i }; }
+  return null;
+}
+function reviewPreview(it) {
+  const t = it.kind === "scenario" ? it.d.q : it.kind === "pair" ? it.d.clue
+    : it.kind === "order" ? it.d.prompt : (it.d.slots[it.i].caption || it.d.title);
+  return t.length > 90 ? t.slice(0, 87) + "..." : t;
+}
+
+renderers.review = function () {
+  const panel = document.getElementById("panel-review");
+  // Drop schedule entries whose question no longer exists in questions.js (ids are never reused,
+  // but a reworded diagram or order can orphan a scheduled id).
+  const all = Object.keys(store.review).sort((a, b) => store.review[a].due.localeCompare(store.review[b].due));
+  const gone = all.filter(id => !reviewItem(id));
+  gone.forEach(id => delete store.review[id]);
+  if (gone.length) saveStore();
+  const due = all.filter(id => store.review[id] && store.review[id].due <= today());
+  const upcoming = all.filter(id => store.review[id] && store.review[id].due > today());
+  panel.replaceChildren(el("div", { class: "card" },
+    el("h2", { text: "Spaced review" }),
+    el("p", { class: "muted", text: "Every question you miss in any mode comes back tomorrow, then after 3, 7 and 14 days while you keep getting it right. One miss resets the ladder. Anki schedules the CSV decks; this schedules the app questions." }),
+    el("div", { class: "big", text: `${due.length} due today` }),
+    el("p", { class: "muted", text: upcoming.length ? `${upcoming.length} more scheduled, next on ${store.review[upcoming[0]].due}.` : "Nothing else scheduled. Miss something first — that's what feeds this queue." }),
+    el("div", { class: "row" },
+      el("button", { class: "btn", text: `Review ${due.length} due`, disabled: !due.length, onclick: () => runReview(due) })),
+    due.length ? el("div", {}, el("h3", { text: "Due today" }),
+      due.map(id => { const it = reviewItem(id); return el("div", { class: "review-item" }, badge(it.d.topic), " ", reviewPreview(it)); })) : null));
+};
+
+function runReview(ids) {
+  const panel = document.getElementById("panel-review");
+  const items = ids.map(id => ({ id, it: reviewItem(id) }));
+  let idx = 0, ok = 0;
+
+  function updateSchedule(id, correct) {
+    const r = store.review[id];
+    if (!r) return;
+    if (correct) {
+      r.stage++;
+      if (r.stage >= REVIEW_STEPS.length) delete store.review[id];  // cleared the 14-day rung: graduated
+      else r.due = addDays(today(), REVIEW_STEPS[r.stage]);
+    } else {
+      r.stage = 0;
+      r.due = addDays(today(), REVIEW_STEPS[0]);
+    }
+    saveStore();
+  }
+  function next() { idx++; show(); }
+
+  function show() {
+    stopTimer();
+    keyHandler = null;
+    if (idx >= items.length) return finish();
+    const { id, it } = items[idx];
+    const { kind, d, i } = it;
+    const head = el("div", { class: "qtop" }, el("span", { class: "muted", text: `Review ${idx + 1} / ${items.length}` }), badge(d.topic));
+    const fb = el("div");
+    function settle(correct, chosenText, correctText, prompt, detail) {
+      record({ mode: "Review", item: id, topic: d.topic, prompt, chosenText, correctText, correct, guessed: false });
+      updateSchedule(id, correct);
+      if (correct) ok++;
+      fb.replaceChildren(el("div", { class: "feedback " + (correct ? "ok" : "bad") },
+        el("strong", { text: correct ? "Correct. " : "Wrong. " }), detail),
+        el("div", { class: "row" }, el("button", { class: "btn", text: idx + 1 < items.length ? "Next (Enter)" : "See summary (Enter)", onclick: next })));
+    }
+
+    if (kind === "scenario") {
+      const prepared = prepareQuestion(d);
+      const multi = prepared.answer.length > 1;
+      const inputs = [];
+      const opts = prepared.options.map((o, j) => {
+        const inp = el("input", { type: multi ? "checkbox" : "radio", name: "opt" });
+        inputs.push(inp);
+        return el("label", { class: "opt" }, inp, el("span", { class: "key", text: "ABCD"[j] }), el("span", { text: o }));
+      });
+      let submitted = false;
+      const submitBtn = el("button", { class: "btn", text: "Check", onclick: submit });
+      function submit() {
+        if (submitted) return;
+        const chosen = inputs.map((inp, j) => inp.checked ? j : -1).filter(j => j >= 0);
+        if (!chosen.length) { fb.replaceChildren(el("p", { class: "warn-t", text: "Pick an answer first." })); return; }
+        submitted = true;
+        const correct = chosen.length === prepared.answer.length && chosen.every(j => prepared.answer.includes(j));
+        opts.forEach((o, j) => { if (prepared.answer.includes(j)) o.classList.add("right"); else if (chosen.includes(j)) o.classList.add("wrong"); });
+        inputs.forEach(inp => inp.disabled = true);
+        submitBtn.disabled = true;
+        settle(correct, chosen.map(j => prepared.options[j]).join(" + "), prepared.answer.map(j => prepared.options[j]).join(" + "), d.q, d.explain);
+      }
+      keyHandler = e => {
+        const k = e.key.toLowerCase();
+        if (!submitted && "abcd".includes(k) && k.length === 1) {
+          const j = "abcd".indexOf(k); if (inputs[j]) { inputs[j].checked = multi ? !inputs[j].checked : true; e.preventDefault(); }
+        } else if (e.key === "Enter") { e.preventDefault(); submitted ? next() : submit(); }
+      };
+      panel.replaceChildren(el("div", { class: "card" }, head,
+        el("div", { class: "qtext", text: d.q }),
+        multi ? el("p", { class: "warn-t", text: "Choose 2." }) : null,
+        opts,
+        el("div", { class: "row" }, el("span", { class: "muted" }, el("kbd", { text: "A-D" }), " select  ", el("kbd", { text: "Enter" }), " check / next"), submitBtn),
+        fb));
+    } else if (kind === "pair") {
+      const sides = Math.random() < 0.5 ? ["b", "a"] : ["a", "b"];
+      let answered = false;
+      const btns = sides.map((s, j) => el("button", { class: "pairbtn", onclick: () => answer(s) }, (j === 0 ? "← " : "") + d[s] + (j === 1 ? " →" : "")));
+      function answer(side) {
+        if (answered) return; answered = true;
+        const correct = side === d.answer;
+        btns.forEach((b, j) => { if (sides[j] === d.answer) b.classList.add("right"); else if (sides[j] === side) b.classList.add("wrong"); });
+        settle(correct, d[side], d[d.answer], `${d.clue} (${d.a} vs ${d.b})`, d.why);
+      }
+      keyHandler = e => {
+        if (!answered && (e.key === "ArrowLeft" || e.key === "1")) answer(sides[0]);
+        else if (!answered && (e.key === "ArrowRight" || e.key === "2")) answer(sides[1]);
+        else if (answered && e.key === "Enter") next();
+      };
+      panel.replaceChildren(el("div", { class: "card" }, head,
+        el("div", { class: "clue", text: d.clue }),
+        el("div", { class: "pairbtns" }, btns), fb));
+    } else if (kind === "order") {
+      let remaining = shuffle(d.steps);
+      if (remaining.length > 1 && remaining.every((s, j) => s === d.steps[j])) remaining.reverse();
+      const picked = [];
+      let checked = false;
+      const chipsEl = el("div", { class: "chips" });
+      const listEl = el("ol", { class: "picked" });
+      function draw() {
+        chipsEl.replaceChildren(...remaining.map(s => el("button", { class: "chip", onclick: () => { if (checked) return; remaining = remaining.filter(x => x !== s); picked.push(s); draw(); } }, s)));
+        listEl.replaceChildren(...picked.map((s, j) => el("li", { title: checked ? "" : "Click to put it back", onclick: () => { if (checked) return; picked.splice(j, 1); remaining.push(s); draw(); } }, s)));
+      }
+      function check() {
+        if (checked) return;
+        if (remaining.length) { fb.replaceChildren(el("p", { class: "warn-t", text: "Place every step first." })); return; }
+        checked = true;
+        let right = 0;
+        [...listEl.children].forEach((li, j) => { const r = picked[j] === d.steps[j]; if (r) right++; li.classList.add(r ? "right" : "wrong"); });
+        const correct = right === d.steps.length;
+        settle(correct, picked.map((s, j) => `${j + 1}) ${s}`).join(" "), d.steps.map((s, j) => `${j + 1}) ${s}`).join(" "), `Order: ${d.title}`,
+          el("span", {}, `${right} / ${d.steps.length} in position. `, d.why,
+            correct ? null : el("ol", { class: "picked" }, d.steps.map(s => el("li", { class: "right", text: s })))));
+      }
+      keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); checked ? next() : check(); } };
+      panel.replaceChildren(el("div", { class: "card" }, head,
+        el("p", { class: "muted", text: d.prompt }),
+        el("h3", { text: "Steps (click in order)" }), chipsEl,
+        el("h3", { text: "Your order" }), listEl,
+        el("div", { class: "row" }, el("button", { class: "btn", text: "Check", onclick: check })), fb));
+      draw();
+    } else { // one diagram slot, asked as a matching question
+      const s = d.slots[i];
+      const sel = el("select", {}, el("option", { value: "", text: "— choose —" }), shuffle(d.parts).map(p => el("option", { value: p, text: p })));
+      let checked = false;
+      function check() {
+        if (checked) return;
+        if (!sel.value) { fb.replaceChildren(el("p", { class: "warn-t", text: "Pick a part first." })); return; }
+        checked = true;
+        const correct = sel.value === s.answer;
+        sel.classList.add(correct ? "right" : "wrong");
+        sel.disabled = true;
+        settle(correct, sel.value, s.answer, `${d.title}: slot ${i + 1}${s.caption ? " (" + s.caption + ")" : ""}`,
+          el("span", {}, correct ? null : `Right answer: ${s.answer}. `, d.why));
+      }
+      keyHandler = e => { if (e.key === "Enter") { e.preventDefault(); checked ? next() : check(); } };
+      panel.replaceChildren(el("div", { class: "card" }, head,
+        el("div", { class: "qtext", text: `${d.title} — where does this part go?` }),
+        s.caption ? el("p", { class: "warn-t", text: s.caption }) : null,
+        el("div", { class: "row" }, sel, el("button", { class: "btn", text: "Check", onclick: check })), fb));
+    }
+  }
+
+  function finish() {
+    const missed = items.length - ok;
+    panel.replaceChildren(el("div", { class: "card" },
+      el("h2", { text: "Review round done" }),
+      el("div", { class: "big", text: `${ok} / ${items.length} remembered` }),
+      el("p", { class: "muted", text: missed
+        ? `${missed} missed — ${missed === 1 ? "it comes" : "they come"} back tomorrow with the ladder reset.`
+        : "All remembered. Each item moved up the 1-3-7-14 ladder; four rights in a row graduates an item." }),
+      el("p", { class: "muted", text: "Misses here are also in Progress & export, ready for the mistake log." }),
+      el("div", { class: "row" }, el("button", { class: "btn", text: "Back to review", onclick: renderers.review }))));
+  }
+  show();
+}
+
+// ================= VISUAL DRILLS =================
+renderers.visual = function () {
+  const panel = document.getElementById("panel-visual");
+  const list = [
+    ...DATA.diagrams.map(d => ({ kind: "diagram", d })),
+    ...DATA.orders.map(d => ({ kind: "order", d }))
+  ];
+  panel.replaceChildren(el("div", { class: "card" },
+    el("h2", { text: "Visual drills" }),
+    el("p", { class: "muted", text: "Diagrams: place every part. Orders: click the steps in the right sequence. Rebuild the picture from memory before you look anything up." }),
+    el("h3", { text: "Diagrams" }),
+    el("div", { class: "chips" }, list.filter(x => x.kind === "diagram").map(x => el("button", { class: "chip", onclick: () => runDiagram(x.d) }, x.d.topic + "  " + x.d.title))),
+    el("h3", { text: "Put in order" }),
+    el("div", { class: "chips" }, list.filter(x => x.kind === "order").map(x => el("button", { class: "chip", onclick: () => runOrder(x.d) }, x.d.topic + "  " + x.d.title)))));
+};
+
+const SVGNS = "http://www.w3.org/2000/svg";
+function svgEl(tag, attrs) { const n = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v); return n; }
+const BOX_STYLE = { region: "#475569", vpc: "#22d3ee", public: "#34d399", private: "#a78bfa", ext: "#fbbf24" };
+
+function runDiagram(d) {
+  const panel = document.getElementById("panel-visual");
+  const svg = svgEl("svg", { viewBox: "0 0 800 480" });
+  const defs = svgEl("defs", {});
+  const marker = svgEl("marker", { id: "arrow", viewBox: "0 0 10 10", refX: "9", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" });
+  marker.append(svgEl("path", { d: "M0,0 L10,5 L0,10 z", fill: "#94a3b8" }));
+  defs.append(marker); svg.append(defs);
+  for (const b of d.boxes) {
+    const c = BOX_STYLE[b.kind] || "#475569";
+    svg.append(svgEl("rect", { x: b.x, y: b.y, width: b.w, height: b.h, rx: 6, fill: c + "14", stroke: c, "stroke-dasharray": b.kind === "region" ? "6 4" : "" }));
+    const t = svgEl("text", { x: b.x + 8, y: b.y + 16, fill: c, "font-size": 12, "font-family": "monospace" }); t.textContent = b.label; svg.append(t);
+  }
+  for (const a of d.arrows || []) svg.append(svgEl("line", { x1: a.x1, y1: a.y1, x2: a.x2, y2: a.y2, stroke: "#94a3b8", "stroke-width": 1.5, "marker-end": "url(#arrow)" }));
+  const parts = shuffle(d.parts);
+  const selects = d.slots.map(() => el("select", {}, el("option", { value: "", text: "— choose —" }), parts.map(p => el("option", { value: p, text: p }))));
+  const fixes = d.slots.map(() => el("div", { class: "fix" }));
+  const slotEls = d.slots.map((s, i) => el("div", { class: "slot", style: `left:${s.x / 8}%;top:${s.y / 4.8}%` },
+    s.caption ? el("div", { class: "cap", text: s.caption }) : null, selects[i], fixes[i]));
+  const fb = el("div");
+  let checked = false;
+  panel.replaceChildren(el("div", { class: "card" },
+    el("div", { class: "qtop" }, el("h2", { text: d.title }), badge(d.topic)),
+    el("p", { class: "muted", text: d.prompt }),
+    el("div", { class: "diagram" }, svg, slotEls),
+    el("div", { class: "row" },
+      el("button", { class: "btn", text: "Check", onclick: check }),
+      el("button", { class: "btn ghost", text: "Retry", onclick: () => runDiagram(d) }),
+      el("button", { class: "btn ghost", text: "Back to list", onclick: renderers.visual })),
+    fb));
+
+  function check() {
+    if (checked) return;
+    if (selects.some(s => !s.value)) { fb.replaceChildren(el("p", { class: "warn-t", text: "Fill every slot first. Guessing is fine; blanks aren't." })); return; }
+    checked = true;
+    let ok = 0;
+    d.slots.forEach((s, i) => {
+      const right = selects[i].value === s.answer;
+      if (right) ok++; else fixes[i].textContent = "→ " + s.answer;
+      selects[i].classList.add(right ? "right" : "wrong"); selects[i].disabled = true;
+      record({ mode: "Visual drill", item: `${d.id}#${i + 1}`, topic: d.topic, prompt: `${d.title}: slot ${i + 1}${s.caption ? " (" + s.caption + ")" : ""}`,
+        chosenText: selects[i].value, correctText: s.answer, correct: right, guessed: false });
+    });
+    fb.replaceChildren(el("div", { class: "feedback " + (ok === d.slots.length ? "ok" : "bad") }, el("strong", { text: `${ok} / ${d.slots.length} correct. ` }), d.why));
+  }
+}
+
+function runOrder(d) {
+  const panel = document.getElementById("panel-visual");
+  let remaining = shuffle(d.steps);
+  // Avoid handing out an already-solved order.
+  if (remaining.length > 1 && remaining.every((s, i) => s === d.steps[i])) remaining.reverse();
+  const picked = [];
+  let checked = false;
+  const chipsEl = el("div", { class: "chips" });
+  const listEl = el("ol", { class: "picked" });
+  const fb = el("div");
+  function draw() {
+    chipsEl.replaceChildren(...remaining.map(s => el("button", { class: "chip", onclick: () => { if (checked) return; remaining = remaining.filter(x => x !== s); picked.push(s); draw(); } }, s)));
+    listEl.replaceChildren(...picked.map((s, i) => el("li", { title: checked ? "" : "Click to put it back", onclick: () => { if (checked) return; picked.splice(i, 1); remaining.push(s); draw(); } }, s)));
+  }
+  panel.replaceChildren(el("div", { class: "card" },
+    el("div", { class: "qtop" }, el("h2", { text: d.title }), badge(d.topic)),
+    el("p", { class: "muted", text: d.prompt }),
+    el("h3", { text: "Steps (click in order)" }), chipsEl,
+    el("h3", { text: "Your order" }), listEl,
+    el("div", { class: "row" },
+      el("button", { class: "btn", text: "Check", onclick: check }),
+      el("button", { class: "btn ghost", text: "Retry", onclick: () => runOrder(d) }),
+      el("button", { class: "btn ghost", text: "Back to list", onclick: renderers.visual })),
+    fb));
+  draw();
+
+  function check() {
+    if (checked) return;
+    if (remaining.length) { fb.replaceChildren(el("p", { class: "warn-t", text: "Place every step first." })); return; }
+    checked = true;
+    let ok = 0;
+    [...listEl.children].forEach((li, i) => { const r = picked[i] === d.steps[i]; if (r) ok++; li.classList.add(r ? "right" : "wrong"); });
+    const correct = ok === d.steps.length;
+    record({ mode: "Visual drill", item: d.id, topic: d.topic, prompt: `Order: ${d.title}`,
+      chosenText: picked.map((s, i) => `${i + 1}) ${s}`).join(" "), correctText: d.steps.map((s, i) => `${i + 1}) ${s}`).join(" "), correct, guessed: false });
+    fb.replaceChildren(el("div", { class: "feedback " + (correct ? "ok" : "bad") },
+      el("strong", { text: `${ok} / ${d.steps.length} in the right position. ` }), d.why,
+      correct ? null : el("ol", { class: "picked" }, d.steps.map(s => el("li", { class: "right", text: s })))));
+  }
+}
+
+// ================= FLASHCARD BLITZ =================
+function parseCSV(text) {
+  const rows = []; let row = [], field = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) {
+      if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else q = false; }
+      else field += c;
+    // Like Python's csv module: a quote only opens a field at its start, so a stray quote mid-field stays literal.
+    } else if (c === '"' && field === "") q = true;
+    else if (c === ",") { row.push(field); field = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && text[i + 1] === "\n") i++;
+      row.push(field); field = "";
+      if (row.some(f => f.trim())) rows.push(row);
+      row = [];
+    } else field += c;
+  }
+  row.push(field); if (row.some(f => f.trim())) rows.push(row);
+  return rows;
+}
+function cardsFromCSV(text, source) {
+  // Lines starting with "#" are Anki file comments (the decks use "#Front,Back,Tags" as a header).
+  const rows = parseCSV(text).filter(r => !(r[0] || "").trimStart().startsWith("#"));
+  if (rows.length && ["front", "text"].includes((rows[0][0] || "").trim().toLowerCase())) rows.shift();
+  return rows.filter(r => r[0] && r[1] !== undefined).map((r, i) => ({ id: `${source}#${i + 1}`, front: r[0], back: r[1] || "", tags: r[2] || "", source }));
+}
+function clozeParts(text) {
+  // {{c1::answer}} or {{c1::answer::hint}}
+  const re = /\{\{c\d+::(.*?)(?:::(.*?))?\}\}/g;
+  return { front: text.replace(re, (_, a, h) => `[${h || "..."}]`), back: text.replace(re, (_, a) => `«${a}»`) };
+}
+renderers.flash = function () {
+  const panel = document.getElementById("panel-flash");
+  const file = el("input", { type: "file", accept: ".csv", multiple: true });
+  const filter = el("input", { type: "text", placeholder: "tag filter, e.g. networking" });
+  const info = el("p", { class: "muted" });
+  function refreshInfo() {
+    const sources = [...new Set(store.flashcards.map(c => c.source))];
+    info.textContent = store.flashcards.length ? `${store.flashcards.length} cards loaded from: ${sources.join(", ")}` : "No cards loaded yet.";
+  }
+  file.addEventListener("change", async () => {
+    const loaded = [];
+    for (const f of file.files) loaded.push(...cardsFromCSV(await f.text(), f.name));
+    const names = new Set([...file.files].map(f => f.name));
+    store.flashcards = store.flashcards.filter(c => !names.has(c.source)).concat(loaded);
+    saveStore(); refreshInfo();
+  });
+  panel.replaceChildren(el("div", { class: "card" },
+    el("h2", { text: "Flashcard blitz" }),
+    el("p", { class: "muted", text: "Load one or more CSV decks from the repo's anki/ folder. Basic and cloze decks both work. Answer out loud before you flip. This is a speed blitz, not a replacement for Anki's scheduling." }),
+    el("div", { class: "row" }, file),
+    el("div", { class: "row" }, filter,
+      el("button", { class: "btn", text: "Start 25-card blitz", onclick: () => {
+        const f = filter.value.trim().toLowerCase();
+        const pool = store.flashcards.filter(c => !f || c.tags.toLowerCase().includes(f));
+        if (!pool.length) { info.textContent = store.flashcards.length ? "No cards match that tag." : "Load a CSV deck first."; return; }
+        runBlitz(shuffle(pool).slice(0, 25));
+      } }),
+      el("button", { class: "btn ghost", text: "Unload decks", onclick: () => { store.flashcards = []; saveStore(); refreshInfo(); } })),
+    info));
+  refreshInfo();
+};
+
+function runBlitz(cards) {
+  const panel = document.getElementById("panel-flash");
+  let idx = 0, ok = 0;
+  function show() {
+    if (idx >= cards.length) {
+      keyHandler = null;
+      panel.replaceChildren(el("div", { class: "card" }, el("h2", { text: "Blitz done" }),
+        el("div", { class: "big", text: `${ok} / ${cards.length} known` }),
+        el("p", { class: "muted", text: "Missed cards are in Progress & export. If a missed card is also due in Anki, mark it Again there too." }),
+        el("div", { class: "row" }, el("button", { class: "btn", text: "Again", onclick: renderers.flash }))));
+      return;
+    }
+    const c = cards[idx];
+    const cloze = /\{\{c\d+::/.test(c.front);
+    const shown = cloze ? clozeParts(c.front) : { front: c.front, back: c.back };
+    let flipped = false;
+    const box = el("div", { class: "card flash", onclick: () => flip() }, el("div", { text: shown.front }), el("div", { class: "muted", text: "(think of the answer, then click or press Space)" }));
+    const actions = el("div", { class: "row" });
+    panel.replaceChildren(el("div", { class: "qtop" }, el("span", { class: "muted", text: `${idx + 1} / ${cards.length}` }), el("span", { class: "badge", text: c.source })), box, actions);
+    function flip() {
+      if (flipped) return; flipped = true;
+      box.replaceChildren(el("div", { text: shown.front }), el("div", { class: "back", text: shown.back }));
+      if (cloze && c.back) box.append(el("div", { class: "extra", text: c.back }));
+      actions.replaceChildren(el("button", { class: "btn", text: "Knew it (1)", onclick: () => mark(true) }), el("button", { class: "btn danger", text: "Missed (2)", onclick: () => mark(false) }));
+    }
+    function mark(knew) {
+      if (knew) ok++;
+      record({ mode: "Flashcard blitz", item: c.id, topic: "", prompt: cloze ? shown.front : c.front,
+        chosenText: knew ? "knew it" : "missed", correctText: cloze ? shown.back : c.back, correct: knew, guessed: false, tags: c.tags });
+      idx++; show();
+    }
+    keyHandler = e => {
+      if (e.key === " ") { e.preventDefault(); flip(); }
+      else if (flipped && e.key === "1") mark(true);
+      else if (flipped && e.key === "2") mark(false);
+    };
+  }
+  show();
+}
+
+// ================= PROGRESS & EXPORT =================
+function mdCell(s) { return String(s || "").replace(/\|/g, "/").replace(/\s+/g, " ").trim(); }
+function csvCell(s) { const v = String(s || ""); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+
+renderers.progress = function () {
+  const panel = document.getElementById("panel-progress");
+  const st = topicStats();
+  const pendingNow = () => store.attempts.filter(a => !a.exported && (!a.correct || a.guessed));
+  const out = el("textarea", { readonly: true, placeholder: "Exported text appears here." });
+  const note = el("p", { class: "muted" });
+  const pendingInfo = el("p", { class: "muted", text: `${pendingNow().length} new misses or guesses not yet exported.` });
+
+  function copy(text, what) {
+    out.value = text;
+    (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(
+      () => { note.textContent = `${what} copied to clipboard (also shown below).`; },
+      () => { note.textContent = `${what} shown below. Select it and copy.`; });
+  }
+  function exportMistakes() {
+    const pending = pendingNow();
+    if (!pending.length) { note.textContent = "Nothing new to export."; return; }
+    const rows = pending.map(a => {
+      const misses = missCount(a.item);
+      const q = mdCell(a.prompt);
+      const said = `Q: ${q.length > 140 ? q.slice(0, 137) + "..." : q} → ${mdCell(a.chosenText)}`;
+      return `| app-${a.item} | ${a.at.slice(0, 10)} | ${a.topic || mdCell(a.tags)} | Practice app (${a.mode}) | ${said} | ${mdCell(a.correctText)} | ${a.correct && a.guessed ? "guessed-right" : ""} |  |  | ${misses >= 2 ? "yes" : "no"} |`;
+    });
+    copy(rows.join("\n"), `${rows.length} mistake-log rows`);
+    pending.forEach(a => a.exported = true); saveStore();
+    pendingInfo.textContent = "0 new misses or guesses not yet exported.";
+  }
+  function exportCards() {
+    const seen = new Map();
+    for (const a of store.attempts) if (!a.correct && missCount(a.item) >= 2 && a.mode !== "Flashcard blitz") seen.set(a.item, a);
+    if (!seen.size) { note.textContent = "No item has been missed twice yet. Wrong twice = flashcard."; return; }
+    const lines = [...seen.values()].map(a => [csvCell(a.prompt), csvCell(a.correctText), csvCell(`studiolo ${DOMAIN_TAGS[a.topic[0]] || a.topic} practice-app`.replace(/\s+/g, " "))].join(","));
+    copy(lines.join("\n"), `${lines.length} Anki rows (Front,Back,Tags)`);
+  }
+  function download() {
+    const blob = new Blob([JSON.stringify(store, null, 1)], { type: "application/json" });
+    const a = el("a", { href: URL.createObjectURL(blob), download: `studiolo-practice-${today()}.json` });
+    a.click(); URL.revokeObjectURL(a.href);
+  }
+  const importInput = el("input", { type: "file", accept: ".json" });
+  importInput.addEventListener("change", async () => {
+    try {
+      const s = JSON.parse(await importInput.files[0].text());
+      if (!Array.isArray(s.attempts)) throw new Error("bad file");
+      store = { attempts: s.attempts, flashcards: s.flashcards || [], review: s.review || {} }; saveStore(); renderers.progress();
+    } catch (e) { note.textContent = "That file isn't a practice-app backup."; }
+  });
+
+  panel.replaceChildren(
+    el("div", { class: "card" },
+      el("h2", { text: "Per-topic accuracy" }),
+      el("p", { class: "muted", text: "This is a hint, not your level. Levels in learner-map.md come from the Examiner. Red topics (< 70%) are good candidates for the next session or the \"weak topics\" scope." }),
+      el("table", {}, el("tr", {}, el("th", { text: "Topic" }), el("th", { text: "Attempts" }), el("th", { text: "Accuracy" }), el("th", { text: "Last practiced" })),
+        Object.keys(TOPICS).map(t => {
+          const s = st[t];
+          return el("tr", {}, el("td", {}, badge(t)), el("td", { text: s ? s.n : "–" }),
+            el("td", { class: s ? (s.ok / s.n < WEAK_THRESHOLD ? "weak" : "good") : "", text: s ? Math.round(s.ok / s.n * 100) + "%" : "not practiced" }),
+            el("td", { class: "muted", text: s ? s.last.slice(0, 10) : "" }));
+        }))),
+    el("div", { class: "card" },
+      el("h2", { text: "Export" }),
+      pendingInfo,
+      el("div", { class: "row" },
+        el("button", { class: "btn", text: "Mistake-log rows (templates.md §2)", onclick: exportMistakes }),
+        el("button", { class: "btn", text: "Anki rows for items missed twice", onclick: exportCards })),
+      el("p", { class: "muted", text: "Paste the rows into your mistake log and fill in Why wrong and Missed clue yourself. Writing them is part of the learning. The Diagnostician reads that log on ritual day. Check every fact on the Anki rows against an authoritative source for your subject before importing." }),
+      note, out),
+    el("div", { class: "card" },
+      el("h2", { text: "Backup" }),
+      el("p", { class: "muted", text: "Progress is saved in this browser only. Download a backup to move it to another browser or keep it in the repo." }),
+      el("div", { class: "row" },
+        el("button", { class: "btn ghost", text: "Download backup (.json)", onclick: download }),
+        el("label", { class: "inline" }, "Restore:", importInput),
+        el("button", { class: "btn danger", text: "Reset all progress", onclick: () => {
+          if (confirm("Delete all practice history and loaded decks in this browser?")) { store = { attempts: [], flashcards: [], review: {} }; saveStore(); renderers.progress(); }
+        } }))));
+};
+
+renderers.sprint();
+</script>
+</body>
+</html>
