@@ -131,21 +131,28 @@ window.PRACTICE_DATA = {
   diagrams: [
     { id: "V001", topic: "1.2", title: "The session loop",
       prompt: "Place each piece of the daily loop where it happens.",
+      // Two rows of three steps: the top row runs left to right, the bottom row right to left.
+      // Each slot sits inside its own step box. Slot order is fixed: saved reviews key on V001#n.
       boxes: [
-        { x: 10, y: 120, w: 145, h: 55, label: "Session opens", kind: "ext" },
-        { x: 175, y: 120, w: 150, h: 55, label: "Warm-up", kind: "public" },
-        { x: 345, y: 120, w: 150, h: 55, label: "The task", kind: "vpc" },
-        { x: 515, y: 120, w: 150, h: 55, label: "Stuck point", kind: "private" },
-        { x: 685, y: 120, w: 105, h: 55, label: "Wrap-up", kind: "ext" }
+        { x: 25, y: 50, w: 230, h: 140, label: "1 · Session opens", kind: "ext" },
+        { x: 285, y: 50, w: 230, h: 140, label: "2 · Warm-up", kind: "public" },
+        { x: 545, y: 50, w: 230, h: 140, label: "3 · The task", kind: "vpc" },
+        { x: 545, y: 290, w: 230, h: 140, label: "4 · Stuck point", kind: "private" },
+        { x: 285, y: 290, w: 230, h: 140, label: "5 · Start again", kind: "vpc" },
+        { x: 25, y: 290, w: 230, h: 140, label: "6 · Wrap-up", kind: "ext" }
       ],
-      arrows: [ { x1: 155, y1: 147, x2: 175, y2: 147 }, { x1: 325, y1: 147, x2: 345, y2: 147 }, { x1: 495, y1: 147, x2: 515, y2: 147 }, { x1: 665, y1: 147, x2: 685, y2: 147 } ],
+      arrows: [
+        { x1: 255, y1: 120, x2: 285, y2: 120 }, { x1: 515, y1: 120, x2: 545, y2: 120 },
+        { x1: 660, y1: 190, x2: 660, y2: 290 },
+        { x1: 545, y1: 360, x2: 515, y2: 360 }, { x1: 285, y1: 360, x2: 255, y2: 360 }
+      ],
       slots: [
-        { x: 30, y: 230, caption: "Runs first, before any new topic", answer: "Due reviews" },
-        { x: 430, y: 230, caption: "Before opening notes, from memory", answer: "Recall 3 things cold" },
-        { x: 30, y: 330, caption: "The attempt itself, before any help", answer: "Cold attempt" },
-        { x: 430, y: 330, caption: "Only the stuck step, in 6 lines or fewer", answer: "Explainer" },
-        { x: 230, y: 405, caption: "Whole task again, from step 1, alone", answer: "Redo from scratch" },
-        { x: 430, y: 405, caption: "The quiz that sets your level", answer: "Examiner" }
+        { x: 54, y: 98, caption: "Runs first, before any new topic", answer: "Due reviews" },
+        { x: 314, y: 98, caption: "Before opening notes, from memory", answer: "Recall 3 things cold" },
+        { x: 574, y: 98, caption: "The attempt itself, before any help", answer: "Cold attempt" },
+        { x: 574, y: 338, caption: "Only the stuck step, in 6 lines or fewer", answer: "Explainer" },
+        { x: 314, y: 338, caption: "Whole task again, from step 1, alone", answer: "Redo from scratch" },
+        { x: 54, y: 338, caption: "The quiz that sets your level", answer: "Examiner" }
       ],
       parts: ["Due reviews", "Recall 3 things cold", "Cold attempt", "Explainer", "Redo from scratch", "Examiner", "A flashcard", "Highlighting", "Watch the video again"],
       why: "The loop is fixed: clear due reviews first, recall before opening notes, attempt cold, unblock only the stuck step, then redo alone. Everything missed feeds the mistake log, and wrong twice becomes a card.",
