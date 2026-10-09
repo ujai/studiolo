@@ -1,0 +1,31 @@
+name: Feature or change
+description: An idea for the template.
+title: "[Idea] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A few rules here are on purpose: no dependencies, no build step, it works from a local
+        file, and nothing in it does the learner's work for them. Ideas that fit those rules are
+        welcome. Please leave out your own study data.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the moment where the template lets you down today.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What should it do instead?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What do you do about it now?
+      description: A workaround, another tool, or nothing at all.
+    validations:
+      required: false

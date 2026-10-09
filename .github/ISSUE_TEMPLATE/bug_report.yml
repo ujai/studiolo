@@ -1,0 +1,53 @@
+name: Bug report
+description: Something in the template is broken or does the wrong thing.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Issues are public, so please leave out your learner map, mistake
+        log, tracker, and any other personal study data.
+  - type: dropdown
+    id: part
+    attributes:
+      label: What's broken?
+      options:
+        - The practice app (practice/)
+        - A Python script (whats_due.py, generate_topics.py, import_anki.py)
+        - The docs, prompts, or templates
+        - CI (.github/workflows/)
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you did, and what you saw instead of what you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open practice/index.html
+        2. Click the Diagram tab
+        3. ...
+    validations:
+      required: false
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, Python version, and operating system
+      placeholder: Firefox 141 on Windows 11, Python 3.11
+    validations:
+      required: false
+  - type: checkboxes
+    id: house-rules
+    attributes:
+      label: Before you send
+      options:
+        - label: I left out my learner map, mistake log, tracker, and other personal study data.
+          required: true

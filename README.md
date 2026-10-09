@@ -117,6 +117,9 @@ a sysadmin's certification map, but the system is the same.
 ## Working on the template
 
 Changes to the template are welcome. The rules are in [CONTRIBUTING.md](./CONTRIBUTING.md).
+Security problems go through the private reporting in [SECURITY.md](./SECURITY.md) instead of a
+public issue, and [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) says how we treat each other.
+
 Run these before you commit:
 
 ```bash
@@ -153,13 +156,20 @@ know:
   **Progress & export → Download backup**, and keep that file private.
 - Anything you paste into an AI chat goes to that AI company. Don't paste anything you wouldn't
   show a tutor, and never publish your learner map, mistake log, or tracker.
+- Only write down the exam conditions you actually get, like extra time, a screen reader, or a
+  separate room. Your map needs the condition, not the reason, so leave any diagnosis or medical
+  details out of both the map and the chat.
+- If you're studying for school, your school's rules come first. Ask a teacher, parent, or
+  guardian before you paste schoolwork into a chat.
 - If you want to make your copy public, only publish it while the learner files are still
   blank, or if they were never committed. Git keeps every old version, so deleting your rows
   later doesn't remove them from the history. Your commit name and email are public too.
 
 **I'm a teacher. Can I use this with a class?** Yes. Run the Interviewer and Mapmaker once with
 your syllabus, then give each student a copy of that map. They and their agents take it from
-there.
+there. Each student's work stays in their own private copy. Check your school's rules on student
+data and AI tools first, and get sign-off from whoever owns them: what students may paste into a
+chat differs between schools and countries.
 
 ## Where it came from
 
