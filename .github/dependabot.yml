@@ -1,0 +1,9 @@
+version: 2
+
+updates:
+  # The checks workflow pins actions to commits, so this is what keeps them current.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
