@@ -40,8 +40,9 @@ and finding the pattern behind your mistakes.
 
 ## Getting started (about 5 minutes)
 
-1. **Make your own copy.** Fork it, use "Use this template", or clone it. Keep your copy
-   private, because it will hold your own study data.
+1. **Make your own private copy.** Click **Use this template** and pick **Private**, or clone
+   it into a new private repo. Don't fork it: a fork of a public repo is always public, and
+   your copy will hold your own study data.
 2. **Open the folder in an AI coding agent** (Droid, Claude Code, Cursor, Codex, or anything
    else that reads `AGENTS.md`) and say *"Help me study."*
 
@@ -143,8 +144,10 @@ this system uses.
 decides what to study today and how hard, makes you write out full answers, and finds the
 cause behind repeated mistakes. Only the mistakes you keep making end up as Anki cards.
 
-**What about my data?** Everything stays in the repo and in your browser. Nothing is uploaded,
-and there's no tracking. A few things to know:
+**What about my data?** The practice app and the scripts never send anything anywhere, and
+there's no tracking. Your data only leaves your computer when you send it: when you paste it
+into an AI chat, when your agent searches the web, or when you push your repo. A few things to
+know:
 
 - The practice app saves progress in the browser you use, on that device only. To move it, use
   **Progress & export → Download backup**, and keep that file private.

@@ -82,6 +82,16 @@ class AnkiTests(unittest.TestCase):
         self.assertEqual(note.fields, ["New wording", "new answer"])
         self.assertIn("my-tag", note.tags)
 
+    def test_hand_made_note_matched_by_front_is_never_pruned(self):
+        note = Note(5, "question", back="my answer", tags=["mine"])
+        col = Collection([note])
+        a.apply_plan(col, a.plan_deck(col, "deck", [("question", "csv answer", "csv-tag", "")], "Basic", True))
+        self.assertEqual(note.fields, ["question", "csv answer"])
+        self.assertIn("csv-tag", note.tags)
+        self.assertNotIn(a.MANAGED_TAG, note.tags)
+        plan = a.plan_deck(col, "deck", [], "Basic", True)
+        self.assertEqual(plan["removed"], [])
+
     def test_planning_is_nonmutating_and_missing_model_fails(self):
         note = Note(1, "question")
         col = Collection([note])

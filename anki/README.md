@@ -61,11 +61,12 @@ Good to know:
 - **How cards are matched.** A note is matched by the optional 4th column (`#Front,Back,Tags,ID`)
   or by its `studiolo-id::<id>` tag, so rewording a card updates the same note instead of adding
   a copy. Without that column, the script matches on the front text. That means a card you made
-  yourself in the same deck, with the same front as a CSV row, gets its back updated too.
+  yourself in the same deck, with the same front as a CSV row, gets its back updated too. It
+  never gets the `studiolo-managed` tag, though, so pruning can't delete it.
 - **Deleting is opt-in and limited.** `--prune` on its own stops with an error. Preview it with
   `--prune --dry-run` first, then run it with `--prune --confirm-prune`. Even then it only
-  deletes notes the script created (tagged `studiolo-managed`). Cards you made yourself are
-  never deleted.
+  deletes notes the script created (tagged `studiolo-managed`). Cards you made yourself,
+  including ones imported with Anki's File → Import, are never deleted.
 - **Backups.** Before every real write, the script saves a copy of your collection next to it
   (`studiolo-backup-<timestamp>.anki2`). `--dry-run` checks the whole plan on a temporary copy,
   so a broken CSV can't damage your collection.

@@ -17,7 +17,8 @@ CSV format: a "#Front,Back,Tags" comment header, then rows. Cloze decks use
 
 Sync rules, per deck:
 - A CSV card whose front (or cloze text) already exists in the deck updates that note's back
-  and adds the CSV tags. Your own tags (weak-topic, wrong-twice, ...) are kept.
+  and adds the CSV tags. Your own tags (weak-topic, wrong-twice, ...) are kept. A note the
+  script didn't create never gets the studiolo-managed tag, so pruning can't delete it.
 - A CSV card that isn't in the deck yet is added.
 - A note in the deck whose front isn't in the CSV any more (for example the old version of a
   card that was reworded) is only reported, unless you pass --prune. Pruning deletes its
@@ -138,6 +139,9 @@ def plan_deck(col, deck_name, cards, notetype_name, prune):
         if identity and any(t.startswith(ID_PREFIX) and t != identity for t in note.tags):
             raise ValueError(f"{deck_name}: stable ID changed for an existing note.")
         matched.add(note.id)
+        if MANAGED_TAG not in note.tags:
+            # Prune keys on this tag, so adopting a hand-made note must not confer it.
+            csv_tags = [t for t in csv_tags if t != MANAGED_TAG]
         merged_tags = sorted(set(note.tags) | set(csv_tags), key=str.lower)
         if note.fields != [front, back] or sorted(note.tags, key=str.lower) != merged_tags:
             updates.append((note, front, back, merged_tags))
