@@ -6,7 +6,10 @@ window.StudioloStorage = (() => {
   const LEGACY_KEY = "studiolo-practice-v1";
   const BASE_KEY = "studiolo-practice-v2";
   const SESSION_PREFIX = BASE_KEY + ":session:";
-  const sessionKey = SESSION_PREFIX + (globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`);
+  // randomUUID needs a secure context (missing over plain http); getRandomValues does not.
+  const randomId = () => globalThis.crypto.randomUUID?.() ||
+    Array.from(globalThis.crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, "0")).join("");
+  const sessionKey = SESSION_PREFIX + randomId();
   let available = true, blocked = false, own = C.emptyStore(), baseline = C.emptyStore();
   const status = message => {
     const n = document.getElementById("storage-status");
@@ -79,7 +82,7 @@ window.StudioloStorage = (() => {
   }
   function record(attempt) {
     own.attempts.push({ exported: false, guessed: false, ...attempt,
-      id: globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`,
+      id: randomId(),
       at: new Date().toISOString(), day: C.localDay() });
     persist();
     return load();
