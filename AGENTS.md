@@ -51,7 +51,8 @@ in Intake. Set the source status to `official source verified (applicable versio
 When the official source defines the exam format, capture it in Intake under "How I'm tested":
 question types, number of questions, duration, pass mark, and published topic/domain weightings.
 Also record the exam language and regional variant, and any accessibility accommodations the
-learner uses (extra time, screen reader, large print), with their lead time. Shape practice from
+learner uses (extra time, screen reader, large print), with their lead time. Record the exam
+condition only, never a diagnosis or medical details (see §7 Privacy). Shape practice from
 these: weight study time toward the officially weighted areas (a heavily weighted weak area
 jumps the queue), run Sparring drills in the real format and timing, write every question in the
 exam language, and practise under the same accommodation conditions the exam will provide.
@@ -220,6 +221,9 @@ trail: `whats_due.py` turns them into the 30-day review pass rate.
 - The app validates the bank on load (`practice/core.js`): bad IDs, unknown topics, missing
   provenance, and malformed geometry are listed at the top of the page instead of failing
   silently. Run the app once after editing, and fix what it reports.
+- The app loads this file with a `<script>` tag, so a bank is code as well as content. Write it
+  yourself, don't paste a bank from someone else, and never paste one from a paid,
+  NDA-protected, or copyrighted source (see the rule above).
 - Options and answers are not limited to four: the app supports any option count (keys A–Z) and
   any "choose N" answer set. Keep questions in the language the learner is tested in.
 
@@ -276,4 +280,20 @@ the format for full mock tests.
 ## 7. Privacy
 
 This repo holds the learner's personal data: levels, weaknesses, mistakes. Remind them to keep
-their instance private, and never publish their learner map, mistake log, or tracker.
+their instance private, and never publish their learner map, mistake log, or tracker. Git keeps
+every version, so deleting rows later doesn't take them out of the history.
+
+- **Accommodations, not diagnoses.** Record only the exam condition the learner gets: extra
+  time, a screen reader, large print, a separate room, and how far ahead it has to be booked.
+  That's what shapes practice. If the learner mentions a diagnosis, a condition, or medical
+  details, leave them out of `learner-map.md`, the logs, and commits. The map needs the exam
+  condition, not the reason, so don't ask for one.
+- **Minors.** If the learner is under 18, a parent, guardian, or teacher should be in on the
+  setup. Ask only what the map needs, keep the copy private, and don't collect details about the
+  learner or anyone else.
+- **Classrooms.** A teacher can build one map and share it, but each student's work stays in that
+  student's own private copy. The school's rules on student work and AI tools come first: if a
+  policy forbids pasting schoolwork into an AI chat, follow it.
+- **AI chats.** Anything pasted into a chat goes to that AI company, and its training and history
+  settings decide what happens to it afterwards. Paste only what a tutor would need, the same way
+  you'd hand a tutor a note rather than your whole file.

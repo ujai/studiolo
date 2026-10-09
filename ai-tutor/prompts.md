@@ -14,7 +14,7 @@ or Codex working inside this repo). Replace `{...}` placeholders.
 I'm studying {subject} using Studiolo, a markdown study system.
 Goal: {from my Intake}. Deadline: {date, or "none — steady learning"}.
 How I'm tested: {format, question types, count/duration, pass mark, topic weightings — from my Intake}.
-About me: {strong areas, weak areas, hours available, how I usually fail, accommodations if any — from my Intake}.
+About me: {strong areas, weak areas, hours available, how I usually fail, and any exam accommodations — from my Intake}.
 Keep every reply short: max ~8 lines unless I ask for more. One question at a time.
 Never invent numbers, dates, or facts. If unsure, say "verify in an authoritative source".
 Reply in {the language I'll be tested in}.
@@ -71,8 +71,10 @@ Before you teach me anything, interview me to figure out what I actually need to
 Ask one question at a time about: what I'm studying and why, my deadline, the hours I can
 really give it, what I actually know versus what I've merely seen, how I'll be tested
 (format, question types, count/duration, pass mark, published topic weightings), which language
-the exam is in and any regional variant, any accessibility accommodations I use, and what
-usually makes me fail tests. Push back if my answers are vague. If my study follows a defined
+the exam is in and any regional variant, any accessibility accommodations I use (extra time,
+screen reader, large print, a separate room — the exam condition only, never a diagnosis or
+medical details), and what usually makes me fail tests. Push back if my answers are vague. If
+my study follows a defined
 or periodically updated scope (such as a school curriculum, certification, licensing/standardized
 exam, or versioned technical specification), establish the jurisdiction, issuing authority,
 grade/qualification, exam code/version, and target exam date when relevant. Then actively look up
@@ -110,7 +112,8 @@ When done (max 12 questions), give me a 12-line summary: goal, deadline, time bu
 tested (including official format and weightings), what counts as practice for this subject,
 strong areas, weak areas, biggest risk, study jurisdiction/grade or qualification/exam code and
 version, official requirements source and status (or that I need to provide one), exam language
-and regional variant, and accessibility accommodations (or "none").
+and regional variant, and accessibility accommodations (extra time, screen reader, large print,
+a separate room), or "none". Exam conditions only, never a diagnosis or medical details.
 ```
 
 Paste the summary into `learner-map.md` → **Intake**.

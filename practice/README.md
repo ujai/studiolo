@@ -10,7 +10,7 @@ package to install. The rest of this page is for when you want to change the app
 | `index.html` | The page layout and the order the scripts load in. Every file is a classic script, not a module, so the app works when opened straight from the file (`file://`). |
 | `styles.css` | All the styling. Dark theme, one class per widget. |
 | `topics.js` | **Generated** from `learner-map.md` by `python3 generate_topics.py`. Don't edit it by hand. |
-| `questions.js` | Your question bank. The format, including `provenance`, is in `AGENTS.md` §4. |
+| `questions.js` | Your question bank. The format, including `provenance`, is in `AGENTS.md` §4. This file is loaded as a script, so it runs as code (see the rules below). |
 | `core.js` | Pure helpers: dates, option letters, the question checker, and rebuilding the review schedule from your answers. No page code. |
 | `storage.js` | Everything about saving. Each open browser tab saves to its own localStorage key, and they're merged when the app reads them. Also backup/restore and the warning shown when saving fails. |
 | `ui.js` | Shared state and widgets: `el`, `button`, badges, scope pickers, and the controls for multiple-choice and put-in-order questions. |
@@ -28,6 +28,11 @@ package to install. The rest of this page is for when you want to change the app
   that touches the page goes in the tab files.
 - **Every question needs `provenance`.** The checker won't load a question without sources, a
   `verified_on` date, and a `status`. Anything marked `needs-check` gets a warning on screen.
+- **`questions.js` is code, not data.** `index.html` loads it with a `<script src>` tag, so
+  everything in it runs on your machine with the same reach as the rest of the app, including
+  your saved progress. Write your own bank, or read one closely before you use it, and never
+  load a file a stranger sent you. That also means the file can't be a copy of someone else's
+  question bank: see the originality rule in `AGENTS.md` §4.
 - **Never reuse an id.** Saved stats and the review schedule are tied to question ids.
 - **One timer and one key handler at a time.** Drills that keep running call `stopTimer()` and
   check `runGeneration`, so a round you left can't keep running after you switch tabs.

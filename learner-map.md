@@ -22,7 +22,7 @@ you when you study.
 - Time budget: ___ per day, ___ per week
 - How I'm tested: (format, question types, number of questions and time, pass mark, topic weightings if they're published, or "no test, steady learning")
 - Exam language / regional variant (the language the exam is written in, if it's not the one we chat in):
-- Accessibility / accommodations (extra time, screen reader, large print… and how far ahead they need booking; or "none"):
+- Accessibility / accommodations (exam conditions only: extra time, screen reader, large print, a separate room, and how far ahead they must be booked; or "none". No diagnosis or medical details):
 - What counts as practice for this subject: (problems? essays? speaking? building?)
 - Strong areas:
 - Weak areas:
