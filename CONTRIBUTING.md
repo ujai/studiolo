@@ -58,4 +58,5 @@ that nobody disputes, with no made-up numbers.
 ## How to send a change
 
 Keep PRs small. Use plain commit messages starting with `feat:`, `fix:`, or `docs:`. In the PR,
-say what you tested and how.
+say what you tested and how. Dependabot's version-bump PRs for the workflow actions keep their
+own default message; that's fine.

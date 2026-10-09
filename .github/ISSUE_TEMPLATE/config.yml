@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security problem or code of conduct report
+    url: https://github.com/ujai/studiolo/security/advisories/new
+    about: Private report to the maintainer. Please don't open a public issue for these.
+  - name: How do I study with this?
+    url: https://github.com/ujai/studiolo/blob/main/README.md
+    about: Setup, the daily loop, and the FAQ are all in the README.
+  - name: How do I send a change?
+    url: https://github.com/ujai/studiolo/blob/main/CONTRIBUTING.md
+    about: The rules, the checks to run, and what to keep out of a pull request.
